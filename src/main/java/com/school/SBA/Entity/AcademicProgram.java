@@ -24,8 +24,6 @@ public class AcademicProgram {
 	@ManyToOne
 	private School school;
 	
-	
-	
 	public AcademicProgram() {
 		super();
 	}

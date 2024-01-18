@@ -1,7 +1,5 @@
 package com.school.SBA.ServiceIMPL;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +19,7 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 
 	@Autowired
 	private AcademicProgramRepository repository;
-	
+
 	@Autowired
 	private SchoolRepository schoolRepository;
 
@@ -30,44 +28,40 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 
 	@Override
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> saveAcademicProgram(int schoolId,
-			AcademicProgramRequest academicProgramRequest) {
-		
-		return schoolRepository.findById(schoolId).map(a -> {
-			{
-				List<AcademicProgram> academicProgram = mapToAcademicProgram(academicProgramRequest);
-				academicProgram = repository.saveAll(academicProgram);
-				a.setAcademicProgram(academicProgram);
-				schoolRepository.save(a);
-				structure.setStatus(HttpStatus.CREATED.value());
-				structure.setMessage("AcademicProgram object created Sucessfully");
-				structure.setData(mapToAcademicProgramResponse(academicProgram));
-				
-				return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure,HttpStatus.CREATED);
-			}
-		})
-				.orElseThrow(()-> new IllagalRequestException(""));
+	        AcademicProgramRequest academicprogramrequest) {
+	    return schoolRepository.findById(schoolId).map(s -> {
+	        AcademicProgram academicProgram = mapToAcademicProgram(academicprogramrequest);
+	       
+	        academicProgram.setSchool(s); // Set the school for the program
+	        academicProgram = repository.save(academicProgram);
+
+	        structure.setStatus(HttpStatus.CREATED.value());
+	        structure.setMessage("Academic Program object created Successfully");
+	        structure.setData(mapToAcademicProgramResponse(academicProgram));
+	        return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure, HttpStatus.CREATED);
+	    }).orElseThrow(() -> new IllagalRequestException("School not found"));
 	}
-	
-//	@SuppressWarnings("unchecked")
-	public List<AcademicProgram> mapToAcademicProgram(AcademicProgramRequest request) {
-		
+
+
+	public AcademicProgram mapToAcademicProgram(AcademicProgramRequest request) {
+
 		AcademicProgram academicProgram = new AcademicProgram();
 		academicProgram.setProgramName(request.getProgramName());
 		academicProgram.setProgramType(request.getProgramType());
 		academicProgram.setBeginsAt(request.getBeginsAt());
 		academicProgram.setEndsAt(request.getEndsAt());
-		
-		return (List<AcademicProgram>) academicProgram;
+
+		return academicProgram;
 	}
-	
-	public AcademicProgramResponse mapToAcademicProgramResponse (List<AcademicProgram> academicProgram) {
+
+	public AcademicProgramResponse mapToAcademicProgramResponse (AcademicProgram academicProgram) {
 		AcademicProgramResponse academicProgramResponse = new AcademicProgramResponse();
-		academicProgramResponse.setProgramName(((AcademicProgram) academicProgram).getProgramName());
-		academicProgramResponse.setProgramType(((AcademicProgram) academicProgram).getProgramType());
-		academicProgramResponse.setBeginsAt(((AcademicProgram) academicProgram).getBeginsAt());
-		academicProgramResponse.setEndsAt(((AcademicProgram) academicProgram).getEndsAt());
-		
+		academicProgramResponse.setProgramName(academicProgram.getProgramName());
+		academicProgramResponse.setProgramType(academicProgram.getProgramType());
+		academicProgramResponse.setBeginsAt (academicProgram.getBeginsAt());
+		academicProgramResponse.setEndsAt(academicProgram.getEndsAt());
+
 		return academicProgramResponse;
 	}
-	
+
 }

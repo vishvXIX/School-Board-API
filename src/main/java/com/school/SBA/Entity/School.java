@@ -1,6 +1,5 @@
 package com.school.SBA.Entity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,8 +24,9 @@ public class School {
 	@OneToOne
 	private Schedule schedule;
 	
-	@OneToMany (mappedBy = "school")
-	List<AcademicProgram> lAcademicProgram = new ArrayList<>();
+	@OneToMany(mappedBy = "school")
+	private List<AcademicProgram> lAcademicProgram;
+
 	
 	public List<AcademicProgram> getAcademicProgram() {
 		return lAcademicProgram;

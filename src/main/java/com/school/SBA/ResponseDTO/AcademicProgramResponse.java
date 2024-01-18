@@ -1,7 +1,6 @@
 package com.school.SBA.ResponseDTO;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 import com.school.SBA.enums.ProgramType;
 
