@@ -17,14 +17,28 @@ public class Schedule {
 	private LocalTime openAt;
 	private LocalTime closeAt;
 	private int classHourPerDay;
-	private Duration classHourLength;
+	private Duration classHourLengthInMinutes;
 	private LocalTime breakTime;
-	private Duration breakLength; 
+	private Duration breakLengthInMinutes; 
 	private LocalTime lunchTime;
-	private Duration lunchLength;
-	
+	private Duration lunchLengthInMinutes;
+
 	public Schedule() {
 		super();
+	}
+
+	public Schedule(int scheduleId, LocalTime openAt, LocalTime closeAt, int classHourPerDay, Duration classHourLengthInMinutes,
+			LocalTime breakTime, Duration breakLengthInMinutes, LocalTime lunchTime, Duration lunchLengthInMinutes) {
+		super();
+		ScheduleId = scheduleId;
+		this.openAt = openAt;
+		this.closeAt = closeAt;
+		this.classHourPerDay = classHourPerDay;
+		this.classHourLengthInMinutes = classHourLengthInMinutes;
+		this.breakTime = breakTime;
+		this.breakLengthInMinutes = breakLengthInMinutes;
+		this.lunchTime = lunchTime;
+		this.lunchLengthInMinutes = lunchLengthInMinutes;
 	}
 
 	public int getScheduleId() {
@@ -59,12 +73,12 @@ public class Schedule {
 		this.classHourPerDay = classHourPerDay;
 	}
 
-	public Duration getClassHourLength() {
-		return classHourLength;
-	}
+//	public Duration getClassHourLengthInMinutes() {
+//		return classHourLengthInMinutes;
+//	}
 
-	public void setClassHourLength(Duration classHourLength) {
-		this.classHourLength = classHourLength;
+	public void setClassHourLengthInMinutes(Duration classHourLengthInMinutes) {
+		this.classHourLengthInMinutes = classHourLengthInMinutes;
 	}
 
 	public LocalTime getBreakTime() {
@@ -75,12 +89,12 @@ public class Schedule {
 		this.breakTime = breakTime;
 	}
 
-	public Duration getBreakLength() {
-		return breakLength;
-	}
+//	public Duration getBreakLengthInMinutes() {
+//		return breakLengthInMinutes;
+//	}
 
-	public void setBreakLength(Duration breakLength) {
-		this.breakLength = breakLength;
+	public void setBreakLengthInMinutes(Duration breakLengthInMinutes) {
+		this.breakLengthInMinutes = breakLengthInMinutes;
 	}
 
 	public LocalTime getLunchTime() {
@@ -91,33 +105,36 @@ public class Schedule {
 		this.lunchTime = lunchTime;
 	}
 
-	public Duration getLunchLength() {
-		return lunchLength;
+//	public Duration getLunchLengthInMinutes() {
+//		return lunchLengthInMinutes;
+//	}
+
+	public void setLunchLengthInMinutes(Duration lunchLengthInMinutes) {
+		this.lunchLengthInMinutes = lunchLengthInMinutes;
 	}
 
-	public void setLunchLength(Duration lunchLength) {
-		this.lunchLength = lunchLength;
-	}
 
-	public Schedule(int scheduleId, LocalTime openAt, LocalTime closeAt, int classHourPerDay, Duration classHourLength,
-			LocalTime breakTime, Duration breakLength, LocalTime lunchTime, Duration lunchLength) {
-		super();
-		ScheduleId = scheduleId;
-		this.openAt = openAt;
-		this.closeAt = closeAt;
-		this.classHourPerDay = classHourPerDay;
-		this.classHourLength = classHourLength;
-		this.breakTime = breakTime;
-		this.breakLength = breakLength;
-		this.lunchTime = lunchTime;
-		this.lunchLength = lunchLength;
-	}
-	
-	
+	public int getClassHourLengthInMinutes() {
+        return (int) classHourLengthInMinutes.toMinutes();
+    }
 
-	
-	
-	
-	
-	
+    public int getBreakLengthInMinutes() {
+        return (int) breakLengthInMinutes.toMinutes();
+    }
+
+    public int getLunchLengthInMinutes() {
+        return (int) lunchLengthInMinutes.toMinutes();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 }

@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.school.SBA.Entity.School;
 import com.school.SBA.RequestDTO.SchoolRequest;
 import com.school.SBA.ResponseDTO.SchoolResponse;
 import com.school.SBA.Service.SchoolService;

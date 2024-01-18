@@ -1,13 +1,14 @@
 package com.school.SBA.Entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-
-import org.springframework.stereotype.Component;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 	
 @Entity
@@ -24,6 +25,17 @@ public class School {
 	@OneToOne
 	private Schedule schedule;
 	
+	@OneToMany (mappedBy = "school")
+	List<AcademicProgram> lAcademicProgram = new ArrayList<>();
+	
+	public List<AcademicProgram> getAcademicProgram() {
+		return lAcademicProgram;
+	}
+
+	public void setAcademicProgram(List<AcademicProgram> lAcademicProgram) {
+		this.lAcademicProgram = lAcademicProgram;
+	}
+
 	public School() {
 		super();
 	}
@@ -42,8 +54,6 @@ public class School {
 	public Schedule getSchedule() {
 		return schedule;
 	}
-
-
 
 	public void setSchedule(Schedule schedule) {
 		this.schedule = schedule;

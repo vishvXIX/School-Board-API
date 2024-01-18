@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.school.SBA.RequestDTO.ScheduleRequest;
 import com.school.SBA.ResponseDTO.ScheduleResponse;
 import com.school.SBA.Service.ScheduleService;
 import com.school.SBA.Utility.ResponseStructure;
@@ -18,8 +19,8 @@ public class ScheduleController {
 	private ScheduleService service;
 	
 	@PostMapping("/schools/{schoolId}/schedules")
-	public ResponseEntity<ResponseStructure<ScheduleResponse>> createSchedule(@PathVariable int schoolId, @RequestBody ScheduleResponse scheduleResponse) {
-		return service.createSchedule(schoolId,scheduleResponse);
+	public ResponseEntity<ResponseStructure<ScheduleResponse>> createSchedule(@PathVariable int schoolId, @RequestBody ScheduleRequest scheduleRequest) {
+		return service.createSchedule(schoolId,scheduleRequest);
 	}
 	
 }

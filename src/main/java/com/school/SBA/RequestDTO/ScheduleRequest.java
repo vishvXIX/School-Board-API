@@ -1,9 +1,34 @@
 package com.school.SBA.RequestDTO;
 
-import java.time.Duration;
 import java.time.LocalTime;
 
 public class ScheduleRequest {
+
+	private LocalTime openAt;
+	private LocalTime closeAt;
+	private int classHourPerDay;
+	private int classHourLengthInMinutes;
+	private LocalTime breakTime;
+	private int breakLengthInMinutes; 
+	private LocalTime lunchTime;
+	private int lunchLengthInMinutes;
+	
+	public ScheduleRequest() {
+		super();
+	}
+
+	public ScheduleRequest(LocalTime openAt, LocalTime closeAt, int classHourPerDay, int classHourLengthInMinutes,
+			LocalTime breakTime, int breakLengthInMinutes, LocalTime lunchTime, int lunchLengthInMinutes) {
+		super();
+		this.openAt = openAt;
+		this.closeAt = closeAt;
+		this.classHourPerDay = classHourPerDay;
+		this.classHourLengthInMinutes = classHourLengthInMinutes;
+		this.breakTime = breakTime;
+		this.breakLengthInMinutes = breakLengthInMinutes;
+		this.lunchTime = lunchTime;
+		this.lunchLengthInMinutes = lunchLengthInMinutes;
+	}
 
 	public LocalTime getOpenAt() {
 		return openAt;
@@ -29,12 +54,12 @@ public class ScheduleRequest {
 		this.classHourPerDay = classHourPerDay;
 	}
 
-	public Duration getClassHourLength() {
-		return classHourLength;
+	public int getClassHourLengthInMinutes() {
+		return classHourLengthInMinutes;
 	}
 
-	public void setClassHourLength(Duration classHourLength) {
-		this.classHourLength = classHourLength;
+	public void setClassHourLengthInMinutes(int classHourLengthInMinutes) {
+		this.classHourLengthInMinutes = classHourLengthInMinutes;
 	}
 
 	public LocalTime getBreakTime() {
@@ -45,12 +70,12 @@ public class ScheduleRequest {
 		this.breakTime = breakTime;
 	}
 
-	public Duration getBreakLength() {
-		return breakLength;
+	public int getBreakLengthInMinutes() {
+		return breakLengthInMinutes;
 	}
 
-	public void setBreakLength(Duration breakLength) {
-		this.breakLength = breakLength;
+	public void setBreakLengthInMinutes(int breakLengthInMinutes) {
+		this.breakLengthInMinutes = breakLengthInMinutes;
 	}
 
 	public LocalTime getLunchTime() {
@@ -61,39 +86,14 @@ public class ScheduleRequest {
 		this.lunchTime = lunchTime;
 	}
 
-	public Duration getLunchLength() {
-		return lunchLength;
+	public int getLunchLengthInMinutes() {
+		return lunchLengthInMinutes;
 	}
 
-	public void setLunchLength(Duration lunchLength) {
-		this.lunchLength = lunchLength;
+	public void setLunchLengthInMinutes(int lunchLengthInMinutes) {
+		this.lunchLengthInMinutes = lunchLengthInMinutes;
 	}
 
-	private LocalTime openAt;
-	private LocalTime closeAt;
-	private int classHourPerDay;
-	private Duration classHourLength;
-	private LocalTime breakTime;
-	private Duration breakLength; 
-	private LocalTime lunchTime;
-	private Duration lunchLength;
-	
-	public ScheduleRequest() {
-		super();
-	}
-
-	public ScheduleRequest(LocalTime openAt, LocalTime closeAt, int classHourPerDay, Duration classHourLength,
-			LocalTime breakTime, Duration breakLength, LocalTime lunchTime, Duration lunchLength) {
-		super();
-		this.openAt = openAt;
-		this.closeAt = closeAt;
-		this.classHourPerDay = classHourPerDay;
-		this.classHourLength = classHourLength;
-		this.breakTime = breakTime;
-		this.breakLength = breakLength;
-		this.lunchTime = lunchTime;
-		this.lunchLength = lunchLength;
-	}
 	
 	
 	
