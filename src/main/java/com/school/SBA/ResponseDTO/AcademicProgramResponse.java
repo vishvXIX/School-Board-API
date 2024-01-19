@@ -1,8 +1,12 @@
 package com.school.SBA.ResponseDTO;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import com.school.SBA.Entity.Subject;
 import com.school.SBA.enums.ProgramType;
+
+import jakarta.persistence.ManyToMany;
 
 public class AcademicProgramResponse {
 
@@ -11,10 +15,37 @@ public class AcademicProgramResponse {
 	private String programName;
 	private LocalDate beginsAt;
 	private LocalDate endsAt;
+	@ManyToMany
+	private List<Subject> subjects;
 	
+//	private List<Subject> subjectNames; 
+
+	
+//	public List<Subject> getListSubjects() {
+//		return subjectNames;
+//	}
+//
+//	public void setListSubject(List<Subject> subjectNames) {
+//		this.subjectNames = subjectNames	;
+//	}
+
+	public List<Subject> getSubjects() {
+		return subjects;
+	}
+
+
+
+	public void setSubjects(List<Subject> subjects) {
+		this.subjects = subjects;
+	}
+
+
+
 	public AcademicProgramResponse() {
 		super();
 	}
+
+	
 
 	public AcademicProgramResponse(int programId, ProgramType programType, String programName, LocalDate beginsAt,
 			LocalDate endsAt) {
@@ -24,6 +55,7 @@ public class AcademicProgramResponse {
 		this.programName = programName;
 		this.beginsAt = beginsAt;
 		this.endsAt = endsAt;
+//		this.subjectNames = subjectNames;
 	}
 
 	public int getProgramId() {

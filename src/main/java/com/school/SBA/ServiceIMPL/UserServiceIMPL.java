@@ -113,6 +113,24 @@ public class UserServiceIMPL implements UserService{
 		return false;
 	}
 
+	@Override
+	public ResponseEntity<ResponseStructure<UserResponse>> updateUser(int userId, UserRequest userrequest) {
+		User user = repository.findById(userId)
+				.map(existingUser -> {
+					User updatedUser = mapToUser(userrequest,false);
+					updatedUser.setUserId(userId);
+					return repository.save(updatedUser);
+				})
+				.orElseThrow(() -> new UserNotFoundByIdException("User not found by id"));
+
+		ResponseStructure<UserResponse> structure = new ResponseStructure<>();
+		structure.setStatus(HttpStatus.OK.value());
+		structure.setMessage("User updated successfully");
+		structure.setData(mapToUserResponse(user,false));
+
+		return new ResponseEntity<ResponseStructure<UserResponse>>(structure, HttpStatus.OK);
+	}
+
 
 	
 
