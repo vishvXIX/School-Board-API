@@ -15,11 +15,11 @@ public class SubjectRequest {
 		this.subjectName = subjectName;
 	}
 
-	public List<String> getListString() {
+	public List<String> getsubjectName() {
 		return subjectName;
 	}
 
-	public void setListString(List<String> subjectName) {
+	public void setsubjectName(List<String> subjectName) {
 		this.subjectName = subjectName;
 	}
 	

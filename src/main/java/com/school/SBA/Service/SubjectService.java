@@ -10,7 +10,6 @@ public interface SubjectService {
 
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> saveSubject(int programId, SubjectRequest request);
 
-	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> updateSujects(int programId);
 
 	
 	

@@ -15,28 +15,19 @@ public class AcademicProgramResponse {
 	private String programName;
 	private LocalDate beginsAt;
 	private LocalDate endsAt;
+	
 	@ManyToMany
-	private List<Subject> subjects;
-	
-//	private List<Subject> subjectNames; 
+	private List<Subject> listSubjects;
 
-	
-//	public List<Subject> getListSubjects() {
-//		return subjectNames;
-//	}
-//
-//	public void setListSubject(List<Subject> subjectNames) {
-//		this.subjectNames = subjectNames	;
-//	}
 
-	public List<Subject> getSubjects() {
-		return subjects;
+	public List<Subject> getListSubjects() {
+		return listSubjects;
 	}
 
 
 
-	public void setSubjects(List<Subject> subjects) {
-		this.subjects = subjects;
+	public void setListSubjects(List<Subject> listSubjects) {
+		this.listSubjects = listSubjects;
 	}
 
 
@@ -46,17 +37,19 @@ public class AcademicProgramResponse {
 	}
 
 	
-
+	
 	public AcademicProgramResponse(int programId, ProgramType programType, String programName, LocalDate beginsAt,
-			LocalDate endsAt) {
+			LocalDate endsAt, List<Subject> listSubjects) {
 		super();
 		this.programId = programId;
 		this.programType = programType;
 		this.programName = programName;
 		this.beginsAt = beginsAt;
 		this.endsAt = endsAt;
-//		this.subjectNames = subjectNames;
+		this.listSubjects = listSubjects;
 	}
+
+
 
 	public int getProgramId() {
 		return programId;

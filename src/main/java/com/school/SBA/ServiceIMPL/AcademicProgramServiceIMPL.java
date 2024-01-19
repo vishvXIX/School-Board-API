@@ -74,14 +74,12 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 	}
 
 	public AcademicProgramResponse mapToAcademicProgramResponse (AcademicProgram academicProgram) {
-//		Subject subject = new Subject();
-//		subject.setSubjects(academicProgram.getListSubjects());
 		AcademicProgramResponse academicProgramResponse = new AcademicProgramResponse();
 		academicProgramResponse.setProgramName(academicProgram.getProgramName());
 		academicProgramResponse.setProgramType(academicProgram.getProgramType());
 		academicProgramResponse.setBeginsAt (academicProgram.getBeginsAt());
 		academicProgramResponse.setEndsAt(academicProgram.getEndsAt());
-//		academicProgramResponse.setListSubject(academicProgram.getListSubjects());
+		academicProgramResponse.setListSubjects(academicProgram.getListSubjects());
 
 		return academicProgramResponse;
 	}

@@ -10,6 +10,6 @@ import com.school.SBA.Entity.Subject;
 @Repository
 public interface SubjectRepository extends JpaRepository<Subject, Integer>{
 
-	public Optional<Subject> findBySubjectName(String subjectName);
+	public Optional<Subject> findBySubjectName(String subjectNames);
 
 }
