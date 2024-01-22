@@ -31,51 +31,6 @@ public class SubjectServiceIMPL implements SubjectService {
 
 	@Autowired
 	private AcademicProgramRepository academicProgramRepository;
-
-//	@Override
-//	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> saveSubject(int programId, SubjectRequest subjectRequest) {
-//		return academicProgramRepository.findById(programId)
-//				.map(program -> {
-//					List<Subject> subjects = (program.getListSubjects() != null) ? program.getListSubjects(): new ArrayList<Subject>();
-//
-//					// add new subjects
-//					subjectRequest.getListString().forEach(subjectName -> {
-//						boolean isPresent = false; 
-//						for (Subject subject:subjects) {
-//							isPresent = (subjectName.equalsIgnoreCase(subject.getSubjectName())) ? true:false;
-//							if (isPresent)break;
-//						}
-//						if (isPresent)subjects.add(repository.findBySubjectName(subjectName)
-//								.orElseGet(()-> {
-//									Subject subject = new Subject();
-//									subject.setSubjectName(subjectName);
-//									return repository.save(subject);
-//								}));
-//					});
-//					
-//					// remove irrelevent subjects
-//					List<Subject> toBeRemoved = new ArrayList<Subject>();
-//					subjects.forEach(subject -> {
-//						boolean isPresent = false;
-//						for (String name : subjectRequest.getListString()) {
-//							isPresent = (subject.getSubjectName().equalsIgnoreCase(name))? true:false;
-//							if(!isPresent)break;
-//						}
-//						if (!isPresent)toBeRemoved.add(subject);
-//					});
-//					subjects.removeAll(toBeRemoved);
-//					
-//					program.setListSubjects(subjects);
-//					academicProgramRepository.save(program);
-//
-//					structure.setStatus(HttpStatus.CREATED.value());
-//					structure.setMessage("Updated the subject list to Academic Program");
-//					structure.setData(academicProgramServiceIMPL.mapToAcademicProgramResponse(program));
-//					return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure, HttpStatus.CREATED);
-//					
-//				}).orElseThrow(() -> new IllagalRequestException("Academic Program not found"));
-//
-//	}
 	
 	@Override
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> saveSubject(int programId, SubjectRequest subjectRequest) {
