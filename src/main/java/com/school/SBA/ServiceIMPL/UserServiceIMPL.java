@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.school.SBA.Entity.User;
@@ -18,6 +19,9 @@ import com.school.SBA.enums.UserRole;
 
 @Service
 public class UserServiceIMPL implements UserService{
+	
+	@Autowired
+	private PasswordEncoder encoder;
 
 	@Autowired
 	private UserRepository repository;
@@ -78,7 +82,7 @@ public class UserServiceIMPL implements UserService{
 		user.setFirstName(request.getFirstName());
 		user.setLastName(request.getLastName());
 		user.setUserEmail(request.getEmail());
-		user.setpassword(request.getPassword());
+		user.setpassword(encoder.encode(request.getPassword()));
 		user.setcontactNo(request.getContactNo());
 		user.setUserRole(request.getUserRole());
 		user.setDeleted(request.isDelete());

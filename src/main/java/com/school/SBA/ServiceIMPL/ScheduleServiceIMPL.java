@@ -1,6 +1,7 @@
 package com.school.SBA.ServiceIMPL;
 
 import java.time.Duration;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import com.school.SBA.Repository.ScheduleRepository;
 import com.school.SBA.Repository.SchoolRepository;
 import com.school.SBA.RequestDTO.ScheduleRequest;
 import com.school.SBA.ResponseDTO.ScheduleResponse;
+import com.school.SBA.ResponseDTO.SchoolResponse;
 import com.school.SBA.Service.ScheduleService;
 import com.school.SBA.Utility.ResponseStructure;
 
@@ -27,7 +29,7 @@ public class ScheduleServiceIMPL implements ScheduleService {
 
 	@Autowired
 	private ResponseStructure<ScheduleResponse> structure;
-
+	
 	@Override
 	public ResponseEntity<ResponseStructure<ScheduleResponse>> createSchedule(int schoolId,ScheduleRequest schedulerequest) {
 		return schoolRepository.findById(schoolId).map(s->{
@@ -76,6 +78,13 @@ public class ScheduleServiceIMPL implements ScheduleService {
 
 		return response;
 	}
+
+	@Override
+	public List<SchoolResponse> findSchedule(int schoolId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 }
