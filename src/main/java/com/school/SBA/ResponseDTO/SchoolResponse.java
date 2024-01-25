@@ -8,13 +8,9 @@ public class SchoolResponse {
 	private String schoolEmail;
 	private String schoolAddress;
 	
-	
-	
 	public SchoolResponse() {
 		super();
 	}
-
-
 
 	public SchoolResponse(int schoolId, String schoolName, String schoolContactNo, String schoolEmail,
 			String schoolAddress) {

@@ -11,13 +11,17 @@ import jakarta.validation.Valid;
 
 public interface UserService {
 
-	public ResponseEntity<ResponseStructure<UserResponse>> saveUser(UserRequest userrequest);
+//	public ResponseEntity<ResponseStructure<UserResponse>> saveUser(UserRequest userrequest);
 
 	public ResponseEntity<ResponseStructure<UserResponse>> deleteUser(int userId);
 
 	public ResponseEntity<ResponseStructure<UserResponse>> findUser(int userId);
 
 	public ResponseEntity<ResponseStructure<UserResponse>> updateUser(int userId, @Valid UserRequest userrequest);
+
+	public ResponseEntity<ResponseStructure<UserResponse>> saveAdmin(@Valid UserRequest userrequest);
+
+	public ResponseEntity<ResponseStructure<UserResponse>> saveOtherUsers(UserRequest request);
 
 	
 

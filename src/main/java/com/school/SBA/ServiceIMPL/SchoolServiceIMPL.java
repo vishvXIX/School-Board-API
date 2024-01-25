@@ -3,6 +3,7 @@ package com.school.SBA.ServiceIMPL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.school.SBA.Entity.School;
@@ -29,9 +30,10 @@ public class SchoolServiceIMPL implements SchoolService {
 	private ResponseStructure<SchoolResponse> structure;
 
 	@Override
-	public ResponseEntity<ResponseStructure<SchoolResponse>> saveSchool(int userId,SchoolRequest request) {
+	public ResponseEntity<ResponseStructure<SchoolResponse>> saveSchool(SchoolRequest request) {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
 		
-		return userRepository.findById(userId).map(u -> {
+		return userRepository.findByuserName(username).map(u -> {
 			if (u.getUserRole().equals(UserRole.ADMIN)) {
 				if(u.getSchool()== null) {
 					School school = mapToSchool(request);
@@ -50,6 +52,18 @@ public class SchoolServiceIMPL implements SchoolService {
 			
 		}).orElseThrow(()->new UserNotFoundByIdException("Failed to save School"));
 		
+	}
+	
+	@Override
+	public ResponseEntity<ResponseStructure<SchoolResponse>> findSchool(int schoolId) {
+		return schoolRepository.findById(schoolId)
+				.map(school->{
+					structure.setStatus(HttpStatus.FOUND.value());
+					structure.setMessage("school fatch susscessfully");
+					structure.setData(mapToSchoolResponse(school));
+					return new ResponseEntity<>(structure,HttpStatus.FOUND);
+				})
+				.orElseThrow(()-> new UserNotFoundByIdException("School not found by id"));
 	}
 	
 	private School mapToSchool(SchoolRequest request) {
@@ -76,5 +90,7 @@ public class SchoolServiceIMPL implements SchoolService {
 		
 		
 	}
+
+	
 	
 }

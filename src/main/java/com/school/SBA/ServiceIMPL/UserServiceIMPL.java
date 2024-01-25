@@ -17,9 +17,11 @@ import com.school.SBA.Service.UserService;
 import com.school.SBA.Utility.ResponseStructure;
 import com.school.SBA.enums.UserRole;
 
+import jakarta.validation.Valid;
+
 @Service
 public class UserServiceIMPL implements UserService{
-	
+
 	@Autowired
 	private PasswordEncoder encoder;
 
@@ -30,7 +32,29 @@ public class UserServiceIMPL implements UserService{
 	private ResponseStructure<UserResponse> responseStructure;
 
 	@Override
-	public ResponseEntity<ResponseStructure<UserResponse>> saveUser(UserRequest userrequest) {
+	public ResponseEntity<ResponseStructure<UserResponse>> saveAdmin(@Valid UserRequest userrequest) {
+		if(userrequest.getUserRole()==UserRole.ADMIN) {
+			// Fetch existing users from the repository
+			List<User> existingUsers = repository.findAll();
+
+			// Check if the requested role is ADMIN and if an ADMIN already exists
+			if (userrequest.getUserRole() == UserRole.ADMIN && isAdminExists(existingUsers)) {
+				throw new IllegalArgumentException("An ADMIN user already exists.");
+			}
+		}
+		else {
+			throw new IllegalArgumentException("only Admin can register");
+		}
+		User user = repository.save(mapToUser(userrequest,false));
+		responseStructure.setStatus(HttpStatus.CREATED.value());
+		responseStructure.setMessage("User saved Sucessfully");
+		responseStructure.setData(mapToUserResponse(user,false));
+		return new ResponseEntity<ResponseStructure<UserResponse>>(responseStructure,HttpStatus.CREATED);
+
+	}
+
+	@Override
+	public ResponseEntity<ResponseStructure<UserResponse>> saveOtherUsers(UserRequest userrequest) {
 		// Fetch existing users from the repository
 		List<User> existingUsers = repository.findAll();
 
@@ -38,13 +62,14 @@ public class UserServiceIMPL implements UserService{
 		if (userrequest.getUserRole() == UserRole.ADMIN && isAdminExists(existingUsers)) {
 			throw new IllegalArgumentException("An ADMIN user already exists.");
 		}
-		User user = (User) repository.save(mapToUser(userrequest, false));
+
+		User user = repository.save(mapToUser(userrequest,false));
 		responseStructure.setStatus(HttpStatus.CREATED.value());
 		responseStructure.setMessage("User saved Sucessfully");
 		responseStructure.setData(mapToUserResponse(user,false));
 		return new ResponseEntity<ResponseStructure<UserResponse>>(responseStructure,HttpStatus.CREATED);
 	}
-	
+
 	@Override
 	public ResponseEntity<ResponseStructure<UserResponse>> findUser(int userId) {
 		return repository.findById(userId)
@@ -56,15 +81,15 @@ public class UserServiceIMPL implements UserService{
 				})
 				.orElseThrow(()-> new UserNotFoundByIdException("user not found by id"));
 	}
-	
-	
+
+
 	@Override
 	public ResponseEntity<ResponseStructure<UserResponse>> deleteUser(int userId) {
 
 		return repository.findById(userId)
 				.map(user -> {
 					user.setDeleted(true);
-//					userrepository.deleteById(userId);
+					//					userrepository.deleteById(userId);
 					responseStructure.setStatus(HttpStatus.OK.value());
 					responseStructure.setMessage("user deleted successfully");
 					responseStructure.setData(mapToUserResponse(user,true));
@@ -73,7 +98,7 @@ public class UserServiceIMPL implements UserService{
 				})
 				.orElseThrow(() -> new UserNotFoundByIdException("User not found by id"));
 	}
-	
+
 
 	private User mapToUser(UserRequest request,boolean isDeleted) {
 
@@ -90,7 +115,7 @@ public class UserServiceIMPL implements UserService{
 		return user;
 
 	}
-	
+
 	private UserResponse mapToUserResponse(User user,boolean isDeleted) {
 
 		UserResponse response = new UserResponse();
@@ -134,14 +159,6 @@ public class UserServiceIMPL implements UserService{
 
 		return new ResponseEntity<ResponseStructure<UserResponse>>(structure, HttpStatus.OK);
 	}
-
-
-	
-
-	
-
-	
-
 
 
 }

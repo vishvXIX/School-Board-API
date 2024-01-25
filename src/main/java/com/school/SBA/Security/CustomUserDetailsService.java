@@ -6,25 +6,19 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.school.SBA.Entity.User;
 import com.school.SBA.Repository.UserRepository;
 
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
 	@Autowired
-	private UserRepository repository;
-	
+	private UserRepository userrepository;
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		
-		User user = repository.findByUserName(username).orElseThrow(()->new UsernameNotFoundException("Failed to Authenticate User."));
-		return new CustomUserDetails(user);
+		return userrepository.findByuserName(username).map(user->new CustomUserDetails(user)).orElseThrow(
+				()-> new UsernameNotFoundException("Failed to authenticate the user"));
 	}
-	
 	
 
 }

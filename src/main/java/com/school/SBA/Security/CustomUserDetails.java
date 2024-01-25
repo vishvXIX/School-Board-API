@@ -1,41 +1,43 @@
 package com.school.SBA.Security;
 
 import java.util.Collection;
+import java.util.Collections;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.school.SBA.Entity.User;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
 public class CustomUserDetails implements UserDetails{
 	
+	@Autowired
 	private User user;
 	
+
+	public CustomUserDetails(User user) {
+		super();
+		this.user = user;
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		 return Collections.singleton (new SimpleGrantedAuthority(user.getUserRole().name()));
+		
 	}
 
 	@Override
 	public String getPassword() {
 		// TODO Auto-generated method stub
-		return user.getUserName();
+		return user.getPassword();
 	}
 
 	@Override
 	public String getUsername() {
 		// TODO Auto-generated method stub
-		return user.getpassword();
+		return user.getUserName();
 	}
 
 	@Override
@@ -61,7 +63,4 @@ public class CustomUserDetails implements UserDetails{
 		// TODO Auto-generated method stub
 		return true;
 	}
-	
-	
-
 }

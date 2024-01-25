@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,6 +23,7 @@ public class ScheduleController {
 	@Autowired
 	private ScheduleService service;
 	
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@PostMapping("/schools/{schoolId}/schedules")
 	public ResponseEntity<ResponseStructure<ScheduleResponse>> createSchedule(@PathVariable int schoolId, @RequestBody ScheduleRequest scheduleRequest) {
 		return service.createSchedule(schoolId,scheduleRequest);
