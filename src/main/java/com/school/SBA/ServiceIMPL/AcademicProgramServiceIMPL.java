@@ -12,13 +12,18 @@ import org.springframework.stereotype.Service;
 
 import com.school.SBA.Entity.AcademicProgram;
 import com.school.SBA.Entity.School;
+import com.school.SBA.Entity.Subject;
+import com.school.SBA.Entity.User;
 import com.school.SBA.Exception.IllagalRequestException;
+import com.school.SBA.Exception.UserNotFoundByIdException;
 import com.school.SBA.Repository.AcademicProgramRepository;
 import com.school.SBA.Repository.SchoolRepository;
+import com.school.SBA.Repository.UserRepository;
 import com.school.SBA.RequestDTO.AcademicProgramRequest;
 import com.school.SBA.ResponseDTO.AcademicProgramResponse;
 import com.school.SBA.Service.AcademicProgramService;
 import com.school.SBA.Utility.ResponseStructure;
+import com.school.SBA.enums.UserRole;
 
 @Service
 public class AcademicProgramServiceIMPL implements AcademicProgramService {
@@ -30,14 +35,27 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 	private SchoolRepository schoolRepository;
 
 	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
 	private ResponseStructure<AcademicProgramResponse> structure;
 
 	@Override
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> saveAcademicProgram(int schoolId,
 	        AcademicProgramRequest academicprogramrequest) {
+		User user = new User();
 	    return schoolRepository.findById(schoolId).map(s -> {
 	        AcademicProgram academicProgram = mapToAcademicProgram(academicprogramrequest);
 	        academicProgram.setSchool(s); // Set the school for the program
+	        if (user.getUserRole() == UserRole.ADMIN) {
+	            throw new IllegalArgumentException("ADMIN user cannot be associated with any Academic Program.");
+	        }
+
+	        // Validate teacher's subject before adding to the academic program
+	        if (user.getUserRole() == UserRole.TEACHER && !isValidTeacherSubject(user.getSubject(),academicProgram)) {
+	            throw new IllegalArgumentException("The teacher has an irrelevant subject to the academic program.");
+	        }
+	        
 	        academicProgram = repository.save(academicProgram);
 	        structure.setStatus(HttpStatus.CREATED.value());
 	        structure.setMessage("Academic Program object created Successfully");
@@ -46,6 +64,13 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 	    }).orElseThrow(() -> new IllagalRequestException("School not found"));
 	}
 
+
+	private boolean isValidTeacherSubject(Subject teacherSubject, AcademicProgram academicProgram) {
+	    List<Subject> relevantSubjects = academicProgram.getListSubjects();
+
+	    return relevantSubjects.contains(teacherSubject);
+	}
+	
 	@Override
 	public List<AcademicProgramResponse> findallAcademicPrograms(int schoolId) {
 	    Optional<School> optionalSchool = schoolRepository.findById(schoolId);
@@ -61,7 +86,42 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 	        return Collections.emptyList();
 	    }
 	}
+	
+	@Override
+	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUserToAcademicProgramm(int programId,
+			int userId) {
+		
+		AcademicProgram academicProgram = repository.findById(programId)
+				.orElseThrow(() -> new IllagalRequestException("Academic Program not found"));
 
+		// Validate the user
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new UserNotFoundByIdException("User not found"));
+
+		// Check if the user is an ADMIN
+		if (user.getUserRole() == UserRole.ADMIN) {
+			throw new IllagalRequestException("Admin cannot be associated with any Academic Program");
+		}
+		if (user.getUserRole() != UserRole.TEACHER && user.getUserRole() != UserRole.STUDENT) {
+			throw new IllagalRequestException("User must have role TEACHER or STUDENT.");
+		}
+
+		// Add the user to the academic program
+		if (!academicProgram.getListUsers().contains(user)) {
+			academicProgram.getListUsers().add(user);
+			repository.save(academicProgram);
+
+			// Return the response
+			ResponseStructure<AcademicProgramResponse> structure = new ResponseStructure<>();
+			structure.setStatus(HttpStatus.CREATED.value());
+			structure.setMessage("User assigned to Academic Program successfully");
+			structure.setData(mapToAcademicProgramResponse(academicProgram));
+			return ResponseEntity.ok(structure);
+		} else {
+			throw new IllagalRequestException("User is already associated with the academic program");
+		}
+
+	}
 	public AcademicProgram mapToAcademicProgram(AcademicProgramRequest request) {
 
 		AcademicProgram academicProgram = new AcademicProgram();
@@ -84,4 +144,8 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 		return academicProgramResponse;
 	}
 
+	
 }
+
+
+

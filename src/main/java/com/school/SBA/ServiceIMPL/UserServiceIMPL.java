@@ -31,6 +31,7 @@ public class UserServiceIMPL implements UserService{
 	@Autowired
 	private ResponseStructure<UserResponse> responseStructure;
 
+
 	@Override
 	public ResponseEntity<ResponseStructure<UserResponse>> saveAdmin(@Valid UserRequest userrequest) {
 		if(userrequest.getUserRole()==UserRole.ADMIN) {
@@ -41,6 +42,9 @@ public class UserServiceIMPL implements UserService{
 			if (userrequest.getUserRole() == UserRole.ADMIN && isAdminExists(existingUsers)) {
 				throw new IllegalArgumentException("An ADMIN user already exists.");
 			}
+			
+			
+			
 		}
 		else {
 			throw new IllegalArgumentException("only Admin can register");
@@ -62,8 +66,13 @@ public class UserServiceIMPL implements UserService{
 		if (userrequest.getUserRole() == UserRole.ADMIN && isAdminExists(existingUsers)) {
 			throw new IllegalArgumentException("An ADMIN user already exists.");
 		}
-
+		
 		User user = repository.save(mapToUser(userrequest,false));
+		
+		if (user.getUserRole() == UserRole.TEACHER || user.getUserRole() == UserRole.STUDENT) {
+			mapUserToAdminSchool(user);
+        }
+		
 		responseStructure.setStatus(HttpStatus.CREATED.value());
 		responseStructure.setMessage("User saved Sucessfully");
 		responseStructure.setData(mapToUserResponse(user,false));
@@ -81,6 +90,24 @@ public class UserServiceIMPL implements UserService{
 				})
 				.orElseThrow(()-> new UserNotFoundByIdException("user not found by id"));
 	}
+	
+	@Override
+	public ResponseEntity<ResponseStructure<UserResponse>> updateUser(int userId, UserRequest userrequest) {
+		User user = repository.findById(userId)
+				.map(existingUser -> {
+					User updatedUser = mapToUser(userrequest,false);
+					updatedUser.setUserId(userId);
+					return repository.save(updatedUser);
+				})
+				.orElseThrow(() -> new UserNotFoundByIdException("User not found by id"));
+
+		ResponseStructure<UserResponse> structure = new ResponseStructure<>();
+		structure.setStatus(HttpStatus.OK.value());
+		structure.setMessage("User updated successfully");
+		structure.setData(mapToUserResponse(user,false));
+
+		return new ResponseEntity<ResponseStructure<UserResponse>>(structure, HttpStatus.OK);
+	}
 
 
 	@Override
@@ -89,7 +116,7 @@ public class UserServiceIMPL implements UserService{
 		return repository.findById(userId)
 				.map(user -> {
 					user.setDeleted(true);
-					//					userrepository.deleteById(userId);
+					//					repository.deleteById(userId);
 					responseStructure.setStatus(HttpStatus.OK.value());
 					responseStructure.setMessage("user deleted successfully");
 					responseStructure.setData(mapToUserResponse(user,true));
@@ -98,6 +125,8 @@ public class UserServiceIMPL implements UserService{
 				})
 				.orElseThrow(() -> new UserNotFoundByIdException("User not found by id"));
 	}
+	
+	
 
 
 	private User mapToUser(UserRequest request,boolean isDeleted) {
@@ -116,7 +145,7 @@ public class UserServiceIMPL implements UserService{
 
 	}
 
-	private UserResponse mapToUserResponse(User user,boolean isDeleted) {
+	UserResponse mapToUserResponse(User user,boolean isDeleted) {
 
 		UserResponse response = new UserResponse();
 		response.setUserId(user.getUserId());
@@ -131,6 +160,17 @@ public class UserServiceIMPL implements UserService{
 		return response ;
 
 	}
+	
+	private void mapUserToAdminSchool(User user) {
+		// Find the admin user
+		User admin =repository.findUserByUserRole(UserRole.ADMIN)
+				.orElseThrow(() -> new IllegalStateException("Admin user not found."));
+
+		// Map the user to the same school as the admin
+		user.setSchool(admin.getSchool());
+		repository.save(user);
+
+	}
 
 	private boolean isAdminExists(List<User> users) {
 		for (User user : users) {
@@ -142,23 +182,9 @@ public class UserServiceIMPL implements UserService{
 		return false;
 	}
 
-	@Override
-	public ResponseEntity<ResponseStructure<UserResponse>> updateUser(int userId, UserRequest userrequest) {
-		User user = repository.findById(userId)
-				.map(existingUser -> {
-					User updatedUser = mapToUser(userrequest,false);
-					updatedUser.setUserId(userId);
-					return repository.save(updatedUser);
-				})
-				.orElseThrow(() -> new UserNotFoundByIdException("User not found by id"));
+	
 
-		ResponseStructure<UserResponse> structure = new ResponseStructure<>();
-		structure.setStatus(HttpStatus.OK.value());
-		structure.setMessage("User updated successfully");
-		structure.setData(mapToUserResponse(user,false));
-
-		return new ResponseEntity<ResponseStructure<UserResponse>>(structure, HttpStatus.OK);
-	}
+	
 
 
 }

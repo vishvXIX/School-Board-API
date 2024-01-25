@@ -1,5 +1,7 @@
 package com.school.SBA.Entity;
 
+import java.util.List;
+
 import com.school.SBA.enums.UserRole;
 
 import jakarta.persistence.Column;
@@ -7,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 
 @Entity
@@ -25,34 +28,32 @@ public class User {
 	private String email;
 	private UserRole userRole;
 	private boolean isDeleted;
-	
+
 	@ManyToOne
 	private School school;
-	
-	
-	
+
+	@ManyToMany(mappedBy = "listUsers")
+	private List<AcademicProgram> listAcademicPrograms;
+
+	@ManyToOne
+	private Subject subject;
+
+	public Subject getSubject() {
+		return subject;
+	}
+	public void setSubject(Subject subject) {
+		this.subject = subject;
+	}
+	public List<AcademicProgram> getListAcademicPrograms() {
+		return listAcademicPrograms;
+	}
+	public void setListAcademicPrograms(List<AcademicProgram> listAcademicPrograms) {
+		this.listAcademicPrograms = listAcademicPrograms;
+	}
 	public School getSchool() {
 		return school;
 	}
 	public void setSchool(School school) {
-		this.school = school;
-	}
-	public User() {
-		super();
-	}
-	
-	public User(int userId, String userName, String password, String firstName, String lastName, String contactNo,
-			String email, UserRole userRole, boolean isDeleted, School school) {
-		super();
-		this.userId = userId;
-		this.userName = userName;
-		this.password = password;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.contactNo = contactNo;
-		this.email = email;
-		this.userRole = userRole;
-		this.isDeleted = isDeleted;
 		this.school = school;
 	}
 	public int getUserId() {
@@ -127,9 +128,26 @@ public class User {
 	public void setDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
-	
-	
-	
-	
-	
+
+	public User() {
+		super();
+	}
+
+	public User(int userId, String userName, String password, String firstName, String lastName, String contactNo,
+			String email, UserRole userRole, boolean isDeleted, School school) {
+		super();
+		this.userId = userId;
+		this.userName = userName;
+		this.password = password;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.contactNo = contactNo;
+		this.email = email;
+		this.userRole = userRole;
+		this.isDeleted = isDeleted;
+		this.school = school;
+	}
+
+
+
 }

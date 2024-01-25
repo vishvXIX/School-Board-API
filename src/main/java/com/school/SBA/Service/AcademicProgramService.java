@@ -15,4 +15,7 @@ public interface AcademicProgramService {
 
 	public List<AcademicProgramResponse> findallAcademicPrograms(int schoolId);
 
+	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUserToAcademicProgramm(int programId,
+			int userId);
+
 }

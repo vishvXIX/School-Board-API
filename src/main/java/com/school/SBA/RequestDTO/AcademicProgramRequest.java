@@ -11,6 +11,8 @@ public class AcademicProgramRequest {
 	private LocalDate beginsAt;
 	private LocalDate endsAt;
 	
+	
+	
 	public AcademicProgramRequest() {
 		super();
 	}

@@ -23,12 +23,34 @@ public class AcademicProgram {
 	private LocalDate beginsAt;
 	private LocalDate endsAt;
 	
+	@ManyToMany
+	private List<Subject> listSubjects;
+	
 	@ManyToOne
 	private School school;
 	
 	@ManyToMany
-	private List<Subject> listSubjects;
+	private List<User> listUsers;
+
+	@ManyToMany
+	private List<Subject> subject;
 	
+	public List<Subject> getSubject() {
+		return subject;
+	}
+
+	public void setSubject(List<Subject> subject) {
+		this.subject = subject;
+	}
+
+	public List<User> getListUsers() {
+		return listUsers;
+	}
+
+	public void setListUsers(List<User> listUsers) {
+		this.listUsers = listUsers;
+	}
+
 	public List<Subject> getListSubjects() {
 		return listSubjects;
 	}
