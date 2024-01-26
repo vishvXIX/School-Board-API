@@ -18,6 +18,8 @@ import com.school.SBA.ResponseDTO.SchoolResponse;
 import com.school.SBA.Service.ScheduleService;
 import com.school.SBA.Utility.ResponseStructure;
 
+import jakarta.validation.Valid;
+
 @Service
 public class ScheduleServiceIMPL implements ScheduleService {
 
@@ -48,35 +50,33 @@ public class ScheduleServiceIMPL implements ScheduleService {
 
 	}
 
-	private Schedule mapToSchedule(ScheduleRequest request) {
-
-		Schedule schedule = new Schedule();
-		schedule.setOpenAt(request.getOpenAt());
-		schedule.setCloseAt(request.getCloseAt());
-		schedule.setClassHourPerDay(request.getClassHourPerDay());
-		schedule.setClassHourLengthInMinutes(Duration.ofMinutes(request.getClassHourLengthInMinutes()));
-		schedule.setBreakTime(request.getBreakTime());
-		schedule.setBreakLengthInMinutes(Duration.ofMinutes(request.getBreakLengthInMinutes()));
-		schedule.setLunchTime(request.getLunchTime());
-		schedule.setLunchLengthInMinutes(Duration.ofMinutes(request.getLunchLengthInMinutes()));
-
-		return schedule;
+	private Schedule mapToSchedule(@Valid ScheduleRequest scheduleRequest)
+	{
+		return Schedule.builder()
+				.openAt(scheduleRequest.getOpenAt())
+				.closeAt(scheduleRequest.getCloseAt())
+				.classHourPerDay(scheduleRequest.getClassHourPerDay())
+				.classHourLengthInMinutes(Duration.ofMinutes(scheduleRequest.getClassHourLengthInMinutes()))
+				.breakTime(scheduleRequest.getBreakTime())
+				.breakLengthInMinutes(Duration.ofMinutes(scheduleRequest.getBreakLengthInMinutes()))
+				.lunchTime(scheduleRequest.getLunchTime())
+				.lunchLengthInMinutes(Duration.ofMinutes(scheduleRequest.getLunchLengthInMinutes()))
+				.build();
 	}
-
-
-	public ScheduleResponse mapToScheduleResponse(Schedule schedule) {
-
-		ScheduleResponse response = new ScheduleResponse();
-		response.setOpenAt(schedule.getOpenAt());
-		response.setCloseAt(schedule.getCloseAt());
-		response.setClassHourPerDay(schedule.getClassHourPerDay());
-		response.setClassHourLengthInMinutes(schedule.getClassHourLengthInMinutes());
-		response.setBreakTime(schedule.getBreakTime());
-		response.setBreakLengthInMinutes(schedule.getBreakLengthInMinutes());
-		response.setLunchTime(schedule.getLunchTime());
-		response.setLunchLengthInMinutes(schedule.getLunchLengthInMinutes());
-
-		return response;
+	
+	private ScheduleResponse mapToScheduleResponse(Schedule schedule)
+	{
+		return ScheduleResponse.builder()
+				.ScheduleId(schedule.getScheduleId())
+				.openAt(schedule.getOpenAt())
+				.closeAt(schedule.getCloseAt())
+				.classHourPerDay(schedule.getClassHourPerDay())
+				.classHourLengthInMinutes((int)schedule.getClassHourLengthInMinutes().toMinutes())
+				.breakTime(schedule.getBreakTime())
+				.breakLengthInMinutes((int)schedule.getBreakLengthInMinutes().toMinutes())
+				.lunchTime(schedule.getLunchTime())
+				.lunchLengthInMinutes((int) schedule.getLunchLengthInMinutes().toMinutes())
+				.build();
 	}
 
 	@Override
@@ -84,6 +84,7 @@ public class ScheduleServiceIMPL implements ScheduleService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 
 }

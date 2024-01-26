@@ -5,9 +5,12 @@ import java.time.LocalDateTime;
 import com.school.SBA.enums.ClassStatus;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -28,6 +31,18 @@ public class ClassHour {
 	private LocalDateTime beginsAt;
 	private LocalDateTime endsAt;
 	private int roomNo;
+	@Enumerated(EnumType.STRING)
 	private ClassStatus classStatus;
+	
+	@ManyToOne
+	private AcademicProgram academicProgram;
+
+	@ManyToOne
+	private User user;
+	
+	@ManyToOne 
+	private Subject subject;
+	
+	
 	
 }

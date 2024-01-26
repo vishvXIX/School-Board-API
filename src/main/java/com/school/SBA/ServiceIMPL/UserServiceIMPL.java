@@ -135,9 +135,9 @@ public class UserServiceIMPL implements UserService{
 		user.setUserName(request.getUsername());
 		user.setFirstName(request.getFirstName());
 		user.setLastName(request.getLastName());
-		user.setUserEmail(request.getEmail());
-		user.setpassword(encoder.encode(request.getPassword()));
-		user.setcontactNo(request.getContactNo());
+		user.setEmail(request.getEmail());
+		user.setPassword(encoder.encode(request.getPassword()));
+		user.setContactNo(request.getContactNo());
 		user.setUserRole(request.getUserRole());
 		user.setDeleted(request.isDelete());
 
@@ -152,10 +152,10 @@ public class UserServiceIMPL implements UserService{
 		response.setUsername(user.getUserName());
 		response.setFirstName(user.getFirstName());
 		response.setLastName(user.getLastName());
-		response.setContactNo(user.getcontactNo());
-		response.setEmail(user.getUserEmail());
+		response.setContactNo(user.getContactNo());
+		response.setEmail(user.getEmail());
 		response.setUserRole(user.getUserRole());
-		response.setDelete(user.isDeleted());
+		response.setDeleted(user.isDeleted());
 
 		return response ;
 

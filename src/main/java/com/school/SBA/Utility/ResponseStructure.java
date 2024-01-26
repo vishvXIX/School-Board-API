@@ -2,7 +2,13 @@ package com.school.SBA.Utility;
 
 import org.springframework.stereotype.Component;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 @Component
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ResponseStructure<T> {
 
 	private int status;

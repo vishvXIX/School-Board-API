@@ -1,9 +1,10 @@
 package com.school.SBA.RequestDTO;
 
-import java.util.List;
+import java.time.LocalDateTime;
+
+import com.school.SBA.enums.ClassStatus;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,10 +15,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Builder
-public class SubjectRequest {
+public class ClassHourRequest {
 
-	private List<String> subjectName;
-
+	private LocalDateTime beginsAt;
+	private LocalDateTime endsAt;
+	private int roomNo;
+	private ClassStatus classStatus;
 	
 }

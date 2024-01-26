@@ -7,7 +7,19 @@ import com.school.SBA.Entity.Subject;
 import com.school.SBA.enums.ProgramType;
 
 import jakarta.persistence.ManyToMany;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
 public class AcademicProgramResponse {
 
 	private int programId;
@@ -18,80 +30,6 @@ public class AcademicProgramResponse {
 	
 	@ManyToMany
 	private List<Subject> listSubjects;
-
-
-	public List<Subject> getListSubjects() {
-		return listSubjects;
-	}
-
-
-
-	public void setListSubjects(List<Subject> listSubjects) {
-		this.listSubjects = listSubjects;
-	}
-
-
-
-	public AcademicProgramResponse() {
-		super();
-	}
-
-	
-	
-	public AcademicProgramResponse(int programId, ProgramType programType, String programName, LocalDate beginsAt,
-			LocalDate endsAt, List<Subject> listSubjects) {
-		super();
-		this.programId = programId;
-		this.programType = programType;
-		this.programName = programName;
-		this.beginsAt = beginsAt;
-		this.endsAt = endsAt;
-		this.listSubjects = listSubjects;
-	}
-
-
-
-	public int getProgramId() {
-		return programId;
-	}
-
-	public void setProgramId(int programId) {
-		this.programId = programId;
-	}
-
-	public ProgramType getProgramType() {
-		return programType;
-	}
-
-	public void setProgramType(ProgramType programType) {
-		this.programType = programType;
-	}
-
-	public String getProgramName() {
-		return programName;
-	}
-
-	public void setProgramName(String programName) {
-		this.programName = programName;
-	}
-
-	public LocalDate getBeginsAt() {
-		return beginsAt;
-	}
-
-	public void setBeginsAt(LocalDate beginsAt) {
-		this.beginsAt = beginsAt;
-	}
-
-	public LocalDate getEndsAt() {
-		return endsAt;
-	}
-
-	public void setEndsAt(LocalDate endsAt) {
-		this.endsAt = endsAt;
-	}
-	
-	
 	
 }
 

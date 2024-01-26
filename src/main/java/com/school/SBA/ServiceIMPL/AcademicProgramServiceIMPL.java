@@ -76,7 +76,7 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 	    Optional<School> optionalSchool = schoolRepository.findById(schoolId);
 	    if (optionalSchool.isPresent()) {
 	        School school = optionalSchool.get();
-	        List<AcademicProgram> academicPrograms = school.getAcademicProgram();
+	        List<AcademicProgram> academicPrograms = school.getLAcademicProgram();
 	        List<AcademicProgramResponse> responses = new ArrayList<>();
 	        for (AcademicProgram academicProgram : academicPrograms) {
 	            responses.add(mapToAcademicProgramResponse(academicProgram));
@@ -112,7 +112,7 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 			repository.save(academicProgram);
 
 			// Return the response
-			ResponseStructure<AcademicProgramResponse> structure = new ResponseStructure<>();
+//			ResponseStructure<AcademicProgramResponse> structure = new ResponseStructure<>();
 			structure.setStatus(HttpStatus.CREATED.value());
 			structure.setMessage("User assigned to Academic Program successfully");
 			structure.setData(mapToAcademicProgramResponse(academicProgram));

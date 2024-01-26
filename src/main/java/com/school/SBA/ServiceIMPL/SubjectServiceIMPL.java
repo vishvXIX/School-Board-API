@@ -16,7 +16,6 @@ import com.school.SBA.Repository.SubjectRepository;
 import com.school.SBA.Repository.UserRepository;
 import com.school.SBA.RequestDTO.SubjectRequest;
 import com.school.SBA.ResponseDTO.AcademicProgramResponse;
-import com.school.SBA.ResponseDTO.SubjectResponse;
 import com.school.SBA.ResponseDTO.UserResponse;
 import com.school.SBA.Service.SubjectService;
 import com.school.SBA.Utility.ResponseStructure;
@@ -30,6 +29,8 @@ public class SubjectServiceIMPL implements SubjectService {
 
 	@Autowired
 	private ResponseStructure<AcademicProgramResponse> structure;
+	
+	
 
 	@Autowired
 	private AcademicProgramServiceIMPL academicProgramServiceIMPL;
@@ -50,7 +51,7 @@ public class SubjectServiceIMPL implements SubjectService {
 	                List<Subject> subjects = (program.getListSubjects() != null) ? program.getListSubjects() : new ArrayList<>();
 
 	                // Add new subjects specified by the client
-	                subjectRequest.getsubjectName().forEach(name -> {
+	                subjectRequest.getSubjectName().forEach(name -> {
 	                    boolean isPresent = subjects.stream().anyMatch(subject -> name.equalsIgnoreCase(subject.getSubjectName()));
 	                    if (!isPresent) {
 	                        subjects.add(repository.findBySubjectName(name)
@@ -65,7 +66,7 @@ public class SubjectServiceIMPL implements SubjectService {
 	                // Remove subjects that are not specified by the client
 	                List<Subject> toBeRemoved = new ArrayList<>();
 	                subjects.forEach(subject -> {
-	                    boolean isPresent = subjectRequest.getsubjectName().stream()
+	                    boolean isPresent = subjectRequest.getSubjectName().stream()
 	                            .anyMatch(name -> subject.getSubjectName().equalsIgnoreCase(name));
 	                    if (!isPresent) {
 	                        toBeRemoved.add(subject);
@@ -101,7 +102,7 @@ public class SubjectServiceIMPL implements SubjectService {
 		user.setSubject(subject);
 
 		userRepository.save(user);
-		ResponseStructure<UserResponse> structure = new ResponseStructure<>();
+		ResponseStructure<UserResponse> structure = new ResponseStructure<UserResponse>();
 		structure.setStatus(HttpStatus.OK.value());
 		structure.setMessage("Subject is assigned to the user");
 		structure.setData(userServiceIMPL.mapToUserResponse(user,false));

@@ -1,10 +1,25 @@
 package com.school.SBA.Entity;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
+@Builder
 @Entity
 public class Subject {
 
@@ -13,22 +28,8 @@ public class Subject {
 	private int subjectId;
 	private String subjectName; 
 
-	public int getSubjectId() {
-		return subjectId;
-	}
+	@OneToMany(mappedBy = "subject")
+	private List<ClassHour> classHours;
 
-	public void setSubjectId(int subjectId) {
-		this.subjectId = subjectId;
-	}
-
-	public String getSubjectName() {
-		return subjectName;
-	}
-
-	public void setSubjectName(String subjectName) {
-		this.subjectName = subjectName;
-	}
-	
-	
 	
 }

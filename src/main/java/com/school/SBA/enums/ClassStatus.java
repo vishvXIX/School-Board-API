@@ -2,10 +2,13 @@ package com.school.SBA.enums;
 
 public enum ClassStatus {
 	
-	Sheduled,
-	NotScheduled,
-	OnGoing,
-	Cancled
+	UPCOMING,
+	ONGOING,
+	COMPLETED,
+	CANCELLED,
+	LUNCH_TIME,
+	BREAK_TIME,
+	NOT_SCHEDULED
 	
 }
 
