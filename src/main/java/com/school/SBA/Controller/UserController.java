@@ -26,11 +26,6 @@ public class UserController {
 	private UserService service;
 	
 	
-//	@PostMapping("/users/register/all")
-//	public ResponseEntity<ResponseStructure<UserResponse>> saveUser(@RequestBody @Valid UserRequest userrequest) {
-//		return service.saveUser(userrequest);	
-//	}
-	
 	@PostMapping("/users/register")
 	public ResponseEntity<ResponseStructure<UserResponse>> saveAdmin(@RequestBody @Valid UserRequest userrequest) {
 		return service.saveAdmin(userrequest);	

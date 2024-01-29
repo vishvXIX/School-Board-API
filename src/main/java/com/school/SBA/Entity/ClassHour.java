@@ -44,5 +44,4 @@ public class ClassHour {
 	private Subject subject;
 	
 	
-	
 }
