@@ -35,10 +35,10 @@ public class ClassHourServiceIMPL implements ClassHourService {
 
 	@Autowired
 	private SubjectRepository subjectRepository;
-	
+
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private AcademicProgramRepository academicProgramRepository;
 
@@ -46,119 +46,123 @@ public class ClassHourServiceIMPL implements ClassHourService {
 	{
 		LocalTime breakTimeStart = schedule.getBreakTime();
 		LocalTime breakTimeEnd = breakTimeStart.plusMinutes(schedule.getBreakLengthInMinutes().toMinutes());
-		
+
 		return (currentTime.toLocalTime().isAfter(breakTimeStart) && currentTime.toLocalTime().isBefore(breakTimeEnd));
 
 	}
-	
+
 	private boolean isLunchTime(LocalDateTime currentTime , Schedule schedule)
 	{
 		LocalTime lunchTimeStart = schedule.getLunchTime();
 		LocalTime lunchTimeEnd = lunchTimeStart.plusMinutes(schedule.getLunchLengthInMinutes().toMinutes());
-		
+
 		return (currentTime.toLocalTime().isAfter(lunchTimeStart) && currentTime.toLocalTime().isBefore(lunchTimeEnd));
 
 	}
-	
+
 	@Override
 	public ResponseEntity<ResponseStructure<String>> generateClassHourForAcademicProgram(int programId) {
-	    return academicProgramRepository.findById(programId)
-	            .map(academicProgram -> {
-	                School school = academicProgram.getSchool();
-	                Schedule schedule = school.getSchedule();
-	                if (schedule != null) {
-	                    int classHourPerDay = schedule.getClassHourPerDay();
-	                    int classHourLength = (int) schedule.getClassHourLengthInMinutes().toMinutes();
+		return academicProgramRepository.findById(programId)
+				.map(academicProgram -> {
+					School school = academicProgram.getSchool();
+					Schedule schedule = school.getSchedule();
+					if (schedule != null) {
+						int classHourPerDay = schedule.getClassHourPerDay();
+						int classHourLength = (int) schedule.getClassHourLengthInMinutes().toMinutes();
 
-	                    LocalDateTime currentTime = LocalDateTime.now().with(schedule.getOpenAt());
+						LocalDateTime currentTime = LocalDateTime.now().with(schedule.getOpenAt());
 
-	                    LocalTime lunchTimeStart = schedule.getLunchTime();
-	                    LocalTime lunchTimeEnd = lunchTimeStart.plusMinutes(schedule.getLunchLengthInMinutes().toMinutes());
-	                    LocalTime breakTimeStart = schedule.getBreakTime();
-	                    LocalTime breakTimeEnd = breakTimeStart.plusMinutes(schedule.getBreakLengthInMinutes().toMinutes());
+						LocalTime lunchTimeStart = schedule.getLunchTime();
+						LocalTime lunchTimeEnd = lunchTimeStart.plusMinutes(schedule.getLunchLengthInMinutes().toMinutes());
+						LocalTime breakTimeStart = schedule.getBreakTime();
+						LocalTime breakTimeEnd = breakTimeStart.plusMinutes(schedule.getBreakLengthInMinutes().toMinutes());
 
-	                    for (int day = 1; day <= 6; day++) {
-	                        for (int hour = 0; hour < classHourPerDay + 2; hour++) {
-	                            ClassHour classHour = new ClassHour();
+						for (int day = 1; day <= 6; day++) {
+							for (int hour = 0; hour < classHourPerDay + 2; hour++) {
+								ClassHour classHour = new ClassHour();
 
-	                            if (!currentTime.toLocalTime().equals(lunchTimeStart) && !isLunchTime(currentTime, schedule)) {
-	                                if (!currentTime.toLocalTime().equals(breakTimeStart) && !isBreakTime(currentTime, schedule)) {
-	                                    LocalDateTime beginsAt = currentTime;
-	                                    LocalDateTime endsAt = beginsAt.plusMinutes(classHourLength);
+								if (!currentTime.toLocalTime().equals(lunchTimeStart) && !isLunchTime(currentTime, schedule)) {
+									if (!currentTime.toLocalTime().equals(breakTimeStart) && !isBreakTime(currentTime, schedule)) {
+										LocalDateTime beginsAt = currentTime;
+										LocalDateTime endsAt = beginsAt.plusMinutes(classHourLength);
 
-	                                    classHour.setBeginsAt(beginsAt);
-	                                    classHour.setEndsAt(endsAt);
-	                                    classHour.setClassStatus(ClassStatus.NOT_SCHEDULED);
+										classHour.setBeginsAt(beginsAt);
+										classHour.setEndsAt(endsAt);
+										classHour.setClassStatus(ClassStatus.NOT_SCHEDULED);
+										classHour.setRoomNo(01);
 
-	                                    currentTime = endsAt;
-	                                } else {
-	                                    classHour.setBeginsAt(currentTime);
-	                                    classHour.setEndsAt(currentTime.plusMinutes(schedule.getBreakLengthInMinutes().toMinutes()));
-	                                    classHour.setClassStatus(ClassStatus.BREAK_TIME);
-	                                    currentTime = currentTime.plusMinutes(schedule.getBreakLengthInMinutes().toMinutes());
-	                                }
-	                            } else {
-	                                classHour.setBeginsAt(currentTime);
-	                                classHour.setEndsAt(currentTime.plusMinutes(schedule.getLunchLengthInMinutes().toMinutes()));
-	                                classHour.setClassStatus(ClassStatus.LUNCH_TIME);
-	                                currentTime = currentTime.plusMinutes(schedule.getLunchLengthInMinutes().toMinutes());
-	                            }
-	                            classHour.setAcademicProgram(academicProgram);
-	                            repository.save(classHour);
-	                        }
-	                        currentTime = currentTime.plusDays(1).with(schedule.getOpenAt());
-	                    }
-	                } else {
-	                    throw new IllagalRequestException("The school does not contain any schedule, please provide a schedule to the school");
-	                }
+										currentTime = endsAt;
+									} else {
+										classHour.setBeginsAt(currentTime);
+										classHour.setEndsAt(currentTime.plusMinutes(schedule.getBreakLengthInMinutes().toMinutes()));
+										classHour.setClassStatus(ClassStatus.BREAK_TIME);
+										currentTime = currentTime.plusMinutes(schedule.getBreakLengthInMinutes().toMinutes());
+										classHour.setRoomNo(01);
+									}
+								} else {
+									classHour.setBeginsAt(currentTime);
+									classHour.setEndsAt(currentTime.plusMinutes(schedule.getLunchLengthInMinutes().toMinutes()));
+									classHour.setClassStatus(ClassStatus.LUNCH_TIME);
+									currentTime = currentTime.plusMinutes(schedule.getLunchLengthInMinutes().toMinutes());
+									classHour.setRoomNo(01);
+								}
+								classHour.setAcademicProgram(academicProgram);
+								repository.save(classHour);
+							}
+							currentTime = currentTime.plusDays(1).with(schedule.getOpenAt());
+						}
+					} else {
+						throw new IllagalRequestException("The school does not contain any schedule, please provide a schedule to the school");
+					}
 
-	                return ResponseEntity.ok(ResponseStructure.<String>builder()
-	                        .status(HttpStatus.CREATED.value())
-	                        .message("ClassHour generated successfully for the academic program")
-	                        .data("Class Hour generated for the current week successfully")
-	                        .build());
-	            })
-	            .orElseThrow(() -> new IllagalRequestException("Invalid Program Id"));
+					return ResponseEntity.ok(ResponseStructure.<String>builder()
+							.status(HttpStatus.CREATED.value())
+							.message("ClassHour generated successfully for the academic program")
+							.data("Class Hour generated for the current week successfully")
+							.build());
+				})
+				.orElseThrow(() -> new IllagalRequestException("Invalid Program Id"));
 	}
-	
+
 	@Override
 	public ResponseEntity<ResponseStructure<List<ClassHourResponse>>> updateClassHour(List<ClassHourDTOs> classHourDtoList) {
 		List<ClassHourResponse> updatedClassHourResponses = new ArrayList<>();
 
 		classHourDtoList.forEach(classHourDTO -> {
-			ClassHour existingClassHour =repository.findById(classHourDTO.getClassHourId()).get();
+			ClassHour existingClassHour = repository.findById(classHourDTO.getClassHourId()).get();
 			Subject subject=subjectRepository.findById(classHourDTO.getSubjectId()).get();
 			User teacher=userRepository.findById(classHourDTO.getTeacherId()).get();
-			if(existingClassHour!=null&&subject!=null&&teacher!=null&&teacher.getUserRole().equals(UserRole.TEACHER)) {
-				
+
+			if(existingClassHour != null && subject != null && teacher != null && teacher.getUserRole().equals(UserRole.TEACHER)) {
+
 				if((teacher.getSubject()).equals(subject))
-				existingClassHour.setSubject(subject);
+					existingClassHour.setSubject(subject);
 				else
 					throw new IllagalRequestException("The Teacher is Not Teaching That Subject");
 				existingClassHour.setUser(teacher);
 				existingClassHour.setRoomNo(classHourDTO.getRoomNo());
 				LocalDateTime currentTime = LocalDateTime.now();
-				
+
 				if (existingClassHour.getBeginsAt().isBefore(currentTime) && existingClassHour.getEndsAt().isAfter(currentTime)) {
-				    existingClassHour.setClassStatus(ClassStatus.ONGOING);
+					existingClassHour.setClassStatus(ClassStatus.ONGOING);
 				} else if (existingClassHour.getEndsAt().isBefore(currentTime)) {
-				    existingClassHour.setClassStatus(ClassStatus.COMPLETED);
+					existingClassHour.setClassStatus(ClassStatus.COMPLETED);
 				} else {
-				    existingClassHour.setClassStatus(ClassStatus.UPCOMING);
+					existingClassHour.setClassStatus(ClassStatus.UPCOMING);
 				}
-				
+
 				existingClassHour=repository.save(existingClassHour);
- 
+
 				ClassHourResponse classHourResponse = new ClassHourResponse();
 				classHourResponse.setBeginsAt(existingClassHour.getBeginsAt());
 				classHourResponse.setEndsAt(existingClassHour.getEndsAt());
 				classHourResponse.setClassStatus(existingClassHour.getClassStatus());
 				classHourResponse.setRoomNo(existingClassHour.getRoomNo());
 				updatedClassHourResponses.add(classHourResponse);
-				
+
 			} 
 			else {
-				throw new IllagalRequestException("Invalid ClassHourID or Invalid User or Invalid Subject");
+				throw new IllagalRequestException("Invalid Teacher Id.");
 			}
 		});
 		ResponseStructure<List<ClassHourResponse>> responseStructure = new ResponseStructure<>();
@@ -166,8 +170,10 @@ public class ClassHourServiceIMPL implements ClassHourService {
 		responseStructure.setMessage("ClassHours updated successfully!!!!");
 		responseStructure.setData(updatedClassHourResponses);
 
+
 		return new ResponseEntity<ResponseStructure<List<ClassHourResponse>>>(responseStructure, HttpStatus.CREATED);
 	}
+
 	
-	
+
 }

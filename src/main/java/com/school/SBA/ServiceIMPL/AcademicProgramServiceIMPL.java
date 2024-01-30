@@ -32,65 +32,68 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 	private AcademicProgramRepository repository;
 
 	@Autowired
+	private UserServiceIMPL userServiceIMPL ;
+
+	@Autowired
 	private SchoolRepository schoolRepository;
 
 	@Autowired
 	private UserRepository userRepository;
-	
+
 	@Autowired
 	private ResponseStructure<AcademicProgramResponse> structure;
 
 	@Override
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> saveAcademicProgram(int schoolId,
-	        AcademicProgramRequest academicprogramrequest) {
+			AcademicProgramRequest academicprogramrequest) {
 		User user = new User();
-	    return schoolRepository.findById(schoolId).map(s -> {
-	        AcademicProgram academicProgram = mapToAcademicProgram(academicprogramrequest);
-	        academicProgram.setSchool(s); // Set the school for the program
-	        if (user.getUserRole() == UserRole.ADMIN) {
-	            throw new IllegalArgumentException("ADMIN user cannot be associated with any Academic Program.");
-	        }
+		return schoolRepository.findById(schoolId).map(s -> {
+			AcademicProgram academicProgram = mapToAcademicProgram(academicprogramrequest);
+			academicProgram.setSchool(s); // Set the school for the program
+			if (user.getUserRole() == UserRole.ADMIN) {
+				throw new IllegalArgumentException("ADMIN user cannot be associated with any Academic Program.");
+			}
 
-	        // Validate teacher's subject before adding to the academic program
-	        if (user.getUserRole() == UserRole.TEACHER && !isValidTeacherSubject(user.getSubject(),academicProgram)) {
-	            throw new IllegalArgumentException("The teacher has an irrelevant subject to the academic program.");
-	        }
-	        
-	        academicProgram = repository.save(academicProgram);
-	        structure.setStatus(HttpStatus.CREATED.value());
-	        structure.setMessage("Academic Program object created Successfully");
-	        structure.setData(mapToAcademicProgramResponse(academicProgram));
-	        return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure, HttpStatus.CREATED);
-	    }).orElseThrow(() -> new IllagalRequestException("School not found"));
+			// Validate teacher's subject before adding to the academic program
+			if (user.getUserRole() == UserRole.TEACHER && !isValidTeacherSubject(user.getSubject(),academicProgram)) {
+				throw new IllegalArgumentException("The teacher has an irrelevant subject to the academic program.");
+			}
+
+			academicProgram = repository.save(academicProgram);
+			structure.setStatus(HttpStatus.CREATED.value());
+			structure.setMessage("Academic Program object created Successfully");
+			structure.setData(mapToAcademicProgramResponse(academicProgram));
+			return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure, HttpStatus.CREATED);
+		}).orElseThrow(() -> new IllagalRequestException("School not found"));
 	}
 
 
 	private boolean isValidTeacherSubject(Subject teacherSubject, AcademicProgram academicProgram) {
-	    List<Subject> relevantSubjects = academicProgram.getListSubjects();
+		List<Subject> relevantSubjects = academicProgram.getListSubjects();
 
-	    return relevantSubjects.contains(teacherSubject);
+		return relevantSubjects.contains(teacherSubject);
 	}
-	
+
 	@Override
 	public List<AcademicProgramResponse> findallAcademicPrograms(int schoolId) {
-	    Optional<School> optionalSchool = schoolRepository.findById(schoolId);
-	    if (optionalSchool.isPresent()) {
-	        School school = optionalSchool.get();
-	        List<AcademicProgram> academicPrograms = school.getLAcademicProgram();
-	        List<AcademicProgramResponse> responses = new ArrayList<>();
-	        for (AcademicProgram academicProgram : academicPrograms) {
-	            responses.add(mapToAcademicProgramResponse(academicProgram));
-	        }
-	        return responses;
-	    } else {
-	        return Collections.emptyList();
-	    }
+		Optional<School> optionalSchool = schoolRepository.findById(schoolId);
+		if (optionalSchool.isPresent()) {
+			School school = optionalSchool.get();
+			List<AcademicProgram> academicPrograms = school.getLAcademicProgram();
+			List<AcademicProgramResponse> responses = new ArrayList<>();
+			for (AcademicProgram academicProgram : academicPrograms) {
+				responses.add(mapToAcademicProgramResponse(academicProgram));
+			}
+			return responses;
+		} else {
+			return Collections.emptyList();
+		}
 	}
-	
+
 	@Override
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUserToAcademicProgramm(int programId,
 			int userId) {
-		
+
 		AcademicProgram academicProgram = repository.findById(programId)
 				.orElseThrow(() -> new IllagalRequestException("Academic Program not found"));
 
@@ -112,7 +115,7 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 			repository.save(academicProgram);
 
 			// Return the response
-//			ResponseStructure<AcademicProgramResponse> structure = new ResponseStructure<>();
+			//			ResponseStructure<AcademicProgramResponse> structure = new ResponseStructure<>();
 			structure.setStatus(HttpStatus.CREATED.value());
 			structure.setMessage("User assigned to Academic Program successfully");
 			structure.setData(mapToAcademicProgramResponse(academicProgram));
@@ -144,7 +147,28 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 		return academicProgramResponse;
 	}
 
-	
+
+	@Override
+
+	public ResponseEntity<ResponseStructure<List<User>>> fetchUsersByRoleInAcademicProgram (int programId,String role) {
+
+		List<User> users = repository.findById(programId).map(program -> userRepository.findByUserRoleAndListAcademicPrograms(UserRole.valueOf(role.toUpperCase()), program))
+		.orElseThrow();
+		
+		
+
+		ResponseStructure<List<User>> responseStructure = new ResponseStructure<List<User>>();
+		responseStructure.setStatus(HttpStatus.OK.value());
+		responseStructure.setMessage("Fetched successfully!!!");
+		responseStructure.setData (users);
+
+		return new ResponseEntity<ResponseStructure<List<User>>> (responseStructure, HttpStatus.OK);
+
+	}
+
+
+
+
 }
 
 

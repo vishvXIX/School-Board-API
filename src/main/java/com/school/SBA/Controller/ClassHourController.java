@@ -31,4 +31,6 @@ public class ClassHourController {
 		return service.updateClassHour(classHourDtoList);
 	}
 	
+	
+	
 }

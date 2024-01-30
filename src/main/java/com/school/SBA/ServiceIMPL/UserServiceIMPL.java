@@ -86,7 +86,7 @@ public class UserServiceIMPL implements UserService{
 					responseStructure.setStatus(HttpStatus.FOUND.value());
 					responseStructure.setMessage("user fatch susscessfully");
 					responseStructure.setData(mapToUserResponse(user,false));
-					return new ResponseEntity<>(responseStructure,HttpStatus.FOUND);
+					return new ResponseEntity<ResponseStructure<UserResponse>>(responseStructure,HttpStatus.FOUND);
 				})
 				.orElseThrow(()-> new UserNotFoundByIdException("user not found by id"));
 	}
@@ -129,7 +129,7 @@ public class UserServiceIMPL implements UserService{
 	
 
 
-	private User mapToUser(UserRequest request,boolean isDeleted) {
+	User mapToUser(UserRequest request,boolean isDeleted) {
 
 		User user = new User();
 		user.setUserName(request.getUsername());
@@ -145,7 +145,7 @@ public class UserServiceIMPL implements UserService{
 
 	}
 
-	UserResponse mapToUserResponse(User user,boolean isDeleted) {
+	public UserResponse mapToUserResponse(User user,boolean isDeleted) {
 
 		UserResponse response = new UserResponse();
 		response.setUserId(user.getUserId());
@@ -162,11 +162,11 @@ public class UserServiceIMPL implements UserService{
 	}
 	
 	private void mapUserToAdminSchool(User user) {
-		// Find the admin user
+		// Find the ADMIN user
 		User admin =repository.findUserByUserRole(UserRole.ADMIN)
 				.orElseThrow(() -> new IllegalStateException("Admin user not found."));
 
-		// Map the user to the same school as the admin
+		// Map the user to the same school as the ADMIN
 		user.setSchool(admin.getSchool());
 		repository.save(user);
 

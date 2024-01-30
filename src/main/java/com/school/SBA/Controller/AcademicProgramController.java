@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.school.SBA.Entity.User;
 import com.school.SBA.RequestDTO.AcademicProgramRequest;
 import com.school.SBA.ResponseDTO.AcademicProgramResponse;
 import com.school.SBA.Service.AcademicProgramService;
@@ -35,9 +36,14 @@ public class AcademicProgramController {
 	}
 	
 	@PreAuthorize("hasAuthority('ADMIN')")
-	@PutMapping("/academic-programs/{programId}/users/{userId}")
+	@PutMapping("/users/{userId}/academic-programs/{programId}")
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUserToAcademicProgramm(@PathVariable int programId, @PathVariable int userId ) {
 		return service.assignUserToAcademicProgramm(programId,userId);
+	}
+	
+	@GetMapping("/academic-programs/{programId}/user-roles/{role}/users")
+	public ResponseEntity<ResponseStructure<List<User>>> fetchUsersByRoleInAcademicProgram(@PathVariable int programId,@PathVariable String role){
+		return service.fetchUsersByRoleInAcademicProgram(programId, role);
 	}
 	
 }

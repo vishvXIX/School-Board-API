@@ -22,4 +22,7 @@ public class ClassHourResponse {
 	private int roomNo;
 	private ClassStatus classStatus;
 	
+	private int userId;
+    private String username;
+    private String email;
 }

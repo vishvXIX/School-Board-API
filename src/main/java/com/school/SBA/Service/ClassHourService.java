@@ -15,4 +15,5 @@ public interface ClassHourService {
 	ResponseEntity<ResponseStructure<List<ClassHourResponse>>> updateClassHour(
 			List<ClassHourDTOs> classHourDtoList);
 
+
 }
