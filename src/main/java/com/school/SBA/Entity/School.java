@@ -30,9 +30,7 @@ public class School {
 	private String schoolContactNo;
 	private String schoolEmail;
 	private String schoolAddress;
-	
-	@OneToMany(mappedBy = "school")
-	private List<User> users;
+	private boolean isDeleted;
 	
 	@OneToOne
 	private Schedule schedule;

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import com.school.SBA.Entity.AcademicProgram;
 import com.school.SBA.Entity.ClassHour;
 import com.school.SBA.Entity.Schedule;
 import com.school.SBA.Entity.School;
@@ -22,6 +23,7 @@ import com.school.SBA.Repository.SubjectRepository;
 import com.school.SBA.Repository.UserRepository;
 import com.school.SBA.RequestDTO.ClassHourDTOs;
 import com.school.SBA.ResponseDTO.ClassHourResponse;
+import com.school.SBA.ResponseDTO.ScheduleResponse;
 import com.school.SBA.Service.ClassHourService;
 import com.school.SBA.Utility.ResponseStructure;
 import com.school.SBA.enums.ClassStatus;
@@ -33,6 +35,9 @@ public class ClassHourServiceIMPL implements ClassHourService {
 	@Autowired
 	private ClassHourRepository repository;
 
+	@Autowired
+	private ClassHourRepository classHourRepository;
+	
 	@Autowired
 	private SubjectRepository subjectRepository;
 
@@ -173,6 +178,17 @@ public class ClassHourServiceIMPL implements ClassHourService {
 
 		return new ResponseEntity<ResponseStructure<List<ClassHourResponse>>>(responseStructure, HttpStatus.CREATED);
 	}
+
+	public void deleteprograms() {
+		List<AcademicProgram> programs =academicProgramRepository.findByIsDeleted(true);
+		programs.forEach(program -> {
+		    classHourRepository.deleteAll(program.getListClassHours());
+		    academicProgramRepository.deleteAll(programs);
+		});
+
+	}
+	
+	
 
 	
 

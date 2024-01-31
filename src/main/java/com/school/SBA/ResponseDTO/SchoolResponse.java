@@ -20,5 +20,6 @@ public class SchoolResponse {
 	private String schoolContactNo;
 	private String schoolEmail;
 	private String schoolAddress;
+	private boolean isDeleted;
 	
 }

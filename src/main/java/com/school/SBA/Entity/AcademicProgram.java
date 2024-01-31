@@ -35,6 +35,7 @@ public class AcademicProgram {
 	private String programName;
 	private LocalDate beginsAt;
 	private LocalDate endsAt;
+	private boolean isDeleted;
 	
 	@ManyToMany
 	private List<Subject> listSubjects;

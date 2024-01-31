@@ -79,7 +79,7 @@ public class SubjectServiceIMPL implements SubjectService {
 
 	                structure.setStatus(HttpStatus.CREATED.value());
 	                structure.setMessage("Created the subject list for the Academic Program");
-	                structure.setData(academicProgramServiceIMPL.mapToAcademicProgramResponse(program));
+	                structure.setData(academicProgramServiceIMPL.mapToAcademicProgramResponse(program,false));
 	                return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure, HttpStatus.CREATED);
 	            })
 	            .orElseThrow(() -> new IllagalRequestException("Academic Program not found"));

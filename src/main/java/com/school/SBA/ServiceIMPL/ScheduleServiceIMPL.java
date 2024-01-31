@@ -2,6 +2,7 @@ package com.school.SBA.ServiceIMPL;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +32,7 @@ public class ScheduleServiceIMPL implements ScheduleService {
 
 	@Autowired
 	private ResponseStructure<ScheduleResponse> structure;
-	
+
 	@Override
 	public ResponseEntity<ResponseStructure<ScheduleResponse>> createSchedule(int schoolId,ScheduleRequest schedulerequest) {
 		return schoolRepository.findById(schoolId).map(s->{
@@ -42,7 +43,7 @@ public class ScheduleServiceIMPL implements ScheduleService {
 				schoolRepository.save(s);
 				structure.setStatus(HttpStatus.CREATED.value());
 				structure.setMessage("schedule object created Sucessfully");
-				structure.setData(mapToScheduleResponse(schedule));
+				structure.setData(mapToScheduleResponse(schedule,false));
 				return new ResponseEntity<ResponseStructure<ScheduleResponse>>(structure,HttpStatus.CREATED);
 			}else 
 				throw new IllagalRequestException("Schedule object is alredy present");
@@ -63,8 +64,8 @@ public class ScheduleServiceIMPL implements ScheduleService {
 				.lunchLengthInMinutes(Duration.ofMinutes(scheduleRequest.getLunchLengthInMinutes()))
 				.build();
 	}
-	
-	private ScheduleResponse mapToScheduleResponse(Schedule schedule)
+
+	private ScheduleResponse mapToScheduleResponse(Schedule schedule, boolean isDeleted)
 	{
 		return ScheduleResponse.builder()
 				.ScheduleId(schedule.getScheduleId())
@@ -76,6 +77,7 @@ public class ScheduleServiceIMPL implements ScheduleService {
 				.breakLengthInMinutes((int)schedule.getBreakLengthInMinutes().toMinutes())
 				.lunchTime(schedule.getLunchTime())
 				.lunchLengthInMinutes((int) schedule.getLunchLengthInMinutes().toMinutes())
+				.isDeleted(schedule.isDeleted())
 				.build();
 	}
 
@@ -83,6 +85,41 @@ public class ScheduleServiceIMPL implements ScheduleService {
 	public List<SchoolResponse> findSchedule(int schoolId) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+//
+//	@Override
+//	public ResponseEntity<ResponseStructure<ScheduleResponse>> deleteById(int scheduleId) {
+//
+//		return repository.findById(scheduleId)
+//				.map(schedules -> {
+//					schedules.setDeleted(true);
+//					repository.deleteById(scheduleId);
+//					repository.save(schedules);
+//					structure.setStatus(HttpStatus.OK.value());
+//					structure.setMessage("schedule Program deleted successfully");
+//					structure.setData(mapToScheduleResponse(schedules,true));
+//
+//					return new ResponseEntity<>(structure, HttpStatus.OK);
+//				})
+//				.orElseThrow(() -> new IllagalRequestException("schedule Program not found by id"));
+//	}
+	
+	@Override
+	public ResponseEntity<ResponseStructure<ScheduleResponse>> deleteById(int scheduleId) throws Exception {
+
+		Optional<Schedule> optional = repository.findById(scheduleId);
+		if(optional.isPresent()) {
+			Schedule schedule = optional.get();
+			repository.delete(schedule);
+//			ResponseStructure<Schedule> responseStructure = new ResponseStructure<>();
+			structure.setStatus(HttpStatus.OK.value());
+			structure.setMessage("Deleted Successfully...");
+			structure.setData(mapToScheduleResponse(schedule, false));
+			return new  ResponseEntity<ResponseStructure<ScheduleResponse>>(structure,HttpStatus.OK);
+		}
+		else {
+			throw new Exception("Schedule Not Found");
+		}
 	}
 
 

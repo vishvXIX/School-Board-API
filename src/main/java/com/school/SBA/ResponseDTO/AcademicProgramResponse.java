@@ -27,6 +27,7 @@ public class AcademicProgramResponse {
 	private String programName;
 	private LocalDate beginsAt;
 	private LocalDate endsAt;
+	private boolean isDeleted;
 	
 	@ManyToMany
 	private List<Subject> listSubjects;

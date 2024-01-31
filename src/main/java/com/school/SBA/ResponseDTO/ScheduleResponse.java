@@ -26,6 +26,7 @@ public class ScheduleResponse {
 	private int breakLengthInMinutes; 
 	private LocalTime lunchTime;
 	private int lunchLengthInMinutes;
+	private boolean isDeleted;
 	
 		
 	

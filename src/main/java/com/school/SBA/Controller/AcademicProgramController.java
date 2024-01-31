@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,6 +45,11 @@ public class AcademicProgramController {
 	@GetMapping("/academic-programs/{programId}/user-roles/{role}/users")
 	public ResponseEntity<ResponseStructure<List<User>>> fetchUsersByRoleInAcademicProgram(@PathVariable int programId,@PathVariable String role){
 		return service.fetchUsersByRoleInAcademicProgram(programId, role);
+	}
+	
+	@DeleteMapping("/academic-programs/{academicProgramId}")
+	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> deleteById(@PathVariable int academicProgramId) {
+		return service.deleteById(academicProgramId);
 	}
 	
 }

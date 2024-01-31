@@ -15,4 +15,6 @@ public interface ScheduleService {
 
 	public List<SchoolResponse> findSchedule(int schoolId);
 
+	public ResponseEntity<ResponseStructure<ScheduleResponse>> deleteById(int scheduleId) throws Exception;
+
 }

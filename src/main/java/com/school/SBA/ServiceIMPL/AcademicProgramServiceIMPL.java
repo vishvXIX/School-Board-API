@@ -32,9 +32,6 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 	private AcademicProgramRepository repository;
 
 	@Autowired
-	private UserServiceIMPL userServiceIMPL ;
-
-	@Autowired
 	private SchoolRepository schoolRepository;
 
 	@Autowired
@@ -62,7 +59,7 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 			academicProgram = repository.save(academicProgram);
 			structure.setStatus(HttpStatus.CREATED.value());
 			structure.setMessage("Academic Program object created Successfully");
-			structure.setData(mapToAcademicProgramResponse(academicProgram));
+			structure.setData(mapToAcademicProgramResponse(academicProgram,false));
 			return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure, HttpStatus.CREATED);
 		}).orElseThrow(() -> new IllagalRequestException("School not found"));
 	}
@@ -82,7 +79,7 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 			List<AcademicProgram> academicPrograms = school.getLAcademicProgram();
 			List<AcademicProgramResponse> responses = new ArrayList<>();
 			for (AcademicProgram academicProgram : academicPrograms) {
-				responses.add(mapToAcademicProgramResponse(academicProgram));
+				responses.add(mapToAcademicProgramResponse(academicProgram,false));
 			}
 			return responses;
 		} else {
@@ -118,7 +115,7 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 			//			ResponseStructure<AcademicProgramResponse> structure = new ResponseStructure<>();
 			structure.setStatus(HttpStatus.CREATED.value());
 			structure.setMessage("User assigned to Academic Program successfully");
-			structure.setData(mapToAcademicProgramResponse(academicProgram));
+			structure.setData(mapToAcademicProgramResponse(academicProgram,false));
 			return ResponseEntity.ok(structure);
 		} else {
 			throw new IllagalRequestException("User is already associated with the academic program");
@@ -136,27 +133,25 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 		return academicProgram;
 	}
 
-	public AcademicProgramResponse mapToAcademicProgramResponse (AcademicProgram academicProgram) {
+	public AcademicProgramResponse mapToAcademicProgramResponse (AcademicProgram academicProgram, boolean isDeleted) {
 		AcademicProgramResponse academicProgramResponse = new AcademicProgramResponse();
 		academicProgramResponse.setProgramName(academicProgram.getProgramName());
 		academicProgramResponse.setProgramType(academicProgram.getProgramType());
 		academicProgramResponse.setBeginsAt (academicProgram.getBeginsAt());
 		academicProgramResponse.setEndsAt(academicProgram.getEndsAt());
 		academicProgramResponse.setListSubjects(academicProgram.getListSubjects());
+		academicProgramResponse.setDeleted(academicProgram.isDeleted());
 
 		return academicProgramResponse;
 	}
 
 
 	@Override
-
 	public ResponseEntity<ResponseStructure<List<User>>> fetchUsersByRoleInAcademicProgram (int programId,String role) {
 
 		List<User> users = repository.findById(programId).map(program -> userRepository.findByUserRoleAndListAcademicPrograms(UserRole.valueOf(role.toUpperCase()), program))
 		.orElseThrow();
 		
-		
-
 		ResponseStructure<List<User>> responseStructure = new ResponseStructure<List<User>>();
 		responseStructure.setStatus(HttpStatus.OK.value());
 		responseStructure.setMessage("Fetched successfully!!!");
@@ -167,6 +162,22 @@ public class AcademicProgramServiceIMPL implements AcademicProgramService {
 	}
 
 
+	@Override
+	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> deleteById(int academicProgramId) {
+
+		return repository.findById(academicProgramId)
+				.map(academicProgram -> {
+					academicProgram.setDeleted(true);
+					//					repository.deleteById(academicProgramId);
+					repository.save(academicProgram);
+					structure.setStatus(HttpStatus.OK.value());
+					structure.setMessage("Academic Program deleted successfully");
+					structure.setData(mapToAcademicProgramResponse(academicProgram,true));
+
+					return new ResponseEntity<>(structure, HttpStatus.OK);
+				})
+				.orElseThrow(() -> new IllagalRequestException("Academic Program not found by id"));
+	}
 
 
 }

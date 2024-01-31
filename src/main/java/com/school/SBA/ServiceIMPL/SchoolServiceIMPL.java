@@ -42,7 +42,7 @@ public class SchoolServiceIMPL implements SchoolService {
 					userRepository.save(u);
 					structure.setStatus(HttpStatus.CREATED.value());
 					structure.setMessage("School saved Successfully");
-					structure.setData(mapToSchoolResponse(school));
+					structure.setData(mapToSchoolResponse(school,false));
 					return new ResponseEntity<ResponseStructure<SchoolResponse>> (structure, HttpStatus.CREATED);
 					
 				}else
@@ -60,7 +60,7 @@ public class SchoolServiceIMPL implements SchoolService {
 				.map(school->{
 					structure.setStatus(HttpStatus.FOUND.value());
 					structure.setMessage("school fatch susscessfully");
-					structure.setData(mapToSchoolResponse(school));
+					structure.setData(mapToSchoolResponse(school,false));
 					return new ResponseEntity<>(structure,HttpStatus.FOUND);
 				})
 				.orElseThrow(()-> new UserNotFoundByIdException("School not found by id"));
@@ -78,13 +78,14 @@ public class SchoolServiceIMPL implements SchoolService {
 		
 	}
 
-	private SchoolResponse mapToSchoolResponse (School school) {
+	private SchoolResponse mapToSchoolResponse (School school, boolean isDeleted) {
 		
 		SchoolResponse response = new SchoolResponse ();
 		response.setSchoolName(school.getSchoolName());
 		response.setSchoolEmail(school.getSchoolEmail());
 		response.setSchoolContactNo(school.getSchoolContactNo());
 		response.setSchoolAddress(school.getSchoolAddress());
+		response.setDeleted(school.isDeleted());
 		
 		return response;
 		
@@ -92,5 +93,21 @@ public class SchoolServiceIMPL implements SchoolService {
 	}
 
 	
+	@Override
+	public ResponseEntity<ResponseStructure<SchoolResponse>> deleteById(int schoolId) {
+
+		return schoolRepository.findById(schoolId)
+				.map(school -> {
+					school.setDeleted(true);
+					//					repository.deleteById(userId);
+					schoolRepository.save(school);
+					structure.setStatus(HttpStatus.OK.value());
+					structure.setMessage("School deleted successfully");
+					structure.setData(mapToSchoolResponse(school,true));
+
+					return new ResponseEntity<>(structure, HttpStatus.OK);
+				})
+				.orElseThrow(() -> new IllagalRequestException("School not found by id"));
+	}
 	
 }

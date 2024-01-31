@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.school.SBA.Entity.User;
 import com.school.SBA.Exception.UserNotFoundByIdException;
+import com.school.SBA.Repository.AcademicProgramRepository;
+import com.school.SBA.Repository.ClassHourRepository;
 import com.school.SBA.Repository.UserRepository;
 import com.school.SBA.RequestDTO.UserRequest;
 import com.school.SBA.ResponseDTO.UserResponse;
@@ -27,9 +29,15 @@ public class UserServiceIMPL implements UserService{
 
 	@Autowired
 	private UserRepository repository;
+	
+	@Autowired
+	private AcademicProgramRepository academicProgramRepository;
 
 	@Autowired
 	private ResponseStructure<UserResponse> responseStructure;
+	
+	@Autowired
+	private ClassHourRepository classHourRepository;
 
 
 	@Override
@@ -42,9 +50,9 @@ public class UserServiceIMPL implements UserService{
 			if (userrequest.getUserRole() == UserRole.ADMIN && isAdminExists(existingUsers)) {
 				throw new IllegalArgumentException("An ADMIN user already exists.");
 			}
-			
-			
-			
+
+
+
 		}
 		else {
 			throw new IllegalArgumentException("only Admin can register");
@@ -66,13 +74,13 @@ public class UserServiceIMPL implements UserService{
 		if (userrequest.getUserRole() == UserRole.ADMIN && isAdminExists(existingUsers)) {
 			throw new IllegalArgumentException("An ADMIN user already exists.");
 		}
-		
+
 		User user = repository.save(mapToUser(userrequest,false));
-		
+
 		if (user.getUserRole() == UserRole.TEACHER || user.getUserRole() == UserRole.STUDENT) {
 			mapUserToAdminSchool(user);
-        }
-		
+		}
+
 		responseStructure.setStatus(HttpStatus.CREATED.value());
 		responseStructure.setMessage("User saved Sucessfully");
 		responseStructure.setData(mapToUserResponse(user,false));
@@ -90,7 +98,7 @@ public class UserServiceIMPL implements UserService{
 				})
 				.orElseThrow(()-> new UserNotFoundByIdException("user not found by id"));
 	}
-	
+
 	@Override
 	public ResponseEntity<ResponseStructure<UserResponse>> updateUser(int userId, UserRequest userrequest) {
 		User user = repository.findById(userId)
@@ -116,7 +124,8 @@ public class UserServiceIMPL implements UserService{
 		return repository.findById(userId)
 				.map(user -> {
 					user.setDeleted(true);
-					//					repository.deleteById(userId);
+//					repository.deleteById(userId);
+					repository.save(user);
 					responseStructure.setStatus(HttpStatus.OK.value());
 					responseStructure.setMessage("user deleted successfully");
 					responseStructure.setData(mapToUserResponse(user,true));
@@ -126,7 +135,25 @@ public class UserServiceIMPL implements UserService{
 				.orElseThrow(() -> new UserNotFoundByIdException("User not found by id"));
 	}
 	
-	
+	public void deleteUsers() {
+	    repository.findByisDeleted(true).forEach(user -> {
+	    	
+	        if (user.isDeleted() && user.getUserRole() != UserRole.ADMIN) {
+	            user.getListAcademicPrograms().forEach(program->{
+	            	program.getListUsers().remove(user);
+	            	academicProgramRepository.save(program);
+	            });
+	            user.getListClassHours().forEach(classHour->{
+	            	classHour.setUser(null);
+	            	classHourRepository.save(classHour);
+	            });
+	            repository .delete(user);
+	        }
+	        System.err.println("DELETED");
+	    });
+	}
+
+
 
 
 	User mapToUser(UserRequest request,boolean isDeleted) {
@@ -160,7 +187,7 @@ public class UserServiceIMPL implements UserService{
 		return response ;
 
 	}
-	
+
 	private void mapUserToAdminSchool(User user) {
 		// Find the ADMIN user
 		User admin =repository.findUserByUserRole(UserRole.ADMIN)
@@ -182,9 +209,9 @@ public class UserServiceIMPL implements UserService{
 		return false;
 	}
 
-	
 
-	
+
+
 
 
 }
