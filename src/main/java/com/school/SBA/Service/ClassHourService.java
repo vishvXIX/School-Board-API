@@ -10,12 +10,12 @@ import com.school.SBA.Utility.ResponseStructure;
 
 public interface ClassHourService {
 
-	ResponseEntity<ResponseStructure<String>> generateClassHourForAcademicProgram(int programId);
+	ResponseEntity<ResponseStructure<List<ClassHourResponse>>> generateClassHourForAcademicProgram(int programId);
 
 	ResponseEntity<ResponseStructure<List<ClassHourResponse>>> updateClassHour(
 			List<ClassHourDTOs> classHourDtoList);
 
-	public ResponseEntity<ResponseStructure<List<ClassHourResponse>>> generateClassHoursForWeek(String requestedDay);
+	ResponseEntity<ResponseStructure<List<ClassHourResponse>>> autoGenerateClassHourForNextWeek();
 
 
 

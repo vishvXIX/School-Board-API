@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,12 +23,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 @Entity
 public class ClassHour {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int classHoueId;
+	private int classHourId;
 	private LocalDateTime beginsAt;
 	private LocalDateTime endsAt;
 	private int roomNo;

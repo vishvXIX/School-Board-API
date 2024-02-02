@@ -1,7 +1,6 @@
 package com.school.SBA.ServiceIMPL;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.school.SBA.Entity.User;
+import com.school.SBA.Exception.IllagalRequestException;
 import com.school.SBA.Exception.UserNotFoundByIdException;
 import com.school.SBA.Repository.AcademicProgramRepository;
 import com.school.SBA.Repository.ClassHourRepository;
@@ -214,7 +214,7 @@ public class UserServiceIMPL implements UserService{
 	private void mapUserToAdminSchool(User user) {
 		// Find the ADMIN user
 		User admin =repository.findUserByUserRole(UserRole.ADMIN)
-				.orElseThrow(() -> new IllegalStateException("Admin user not found."));
+				.orElseThrow(() -> new IllagalRequestException("Admin user not found."));
 
 		// Map the user to the same school as the ADMIN
 		user.setSchool(admin.getSchool());

@@ -22,7 +22,7 @@ public class ClassHourController {
 	private ClassHourService service;
 	
 	@PostMapping("/academic-program/{programId}/class-hours")
-	public ResponseEntity<ResponseStructure<String>> generateClassHourForAcademicProgram(@PathVariable int programId) {
+	public ResponseEntity<ResponseStructure<List<ClassHourResponse>>> generateClassHourForAcademicProgram(@PathVariable int programId) {
 		return service.generateClassHourForAcademicProgram(programId);
 	}
 	
@@ -32,6 +32,10 @@ public class ClassHourController {
 		return service.updateClassHour(classHourDtoList);
 	}
 	
+	@PostMapping("/class-hours")
+	public ResponseEntity<ResponseStructure<List<ClassHourResponse>>> autoGenerateClassHourForNextWeek(){
+		return service.autoGenerateClassHourForNextWeek();
+	}
 	
 	
 }

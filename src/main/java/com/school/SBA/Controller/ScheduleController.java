@@ -1,7 +1,5 @@
 package com.school.SBA.Controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.school.SBA.RequestDTO.ScheduleRequest;
 import com.school.SBA.ResponseDTO.ScheduleResponse;
-import com.school.SBA.ResponseDTO.SchoolResponse;
 import com.school.SBA.Service.ScheduleService;
 import com.school.SBA.Utility.ResponseStructure;
 
@@ -30,7 +27,7 @@ public class ScheduleController {
 	}
 	
 	@PutMapping("/schools/{schoolId}/schedules")
-	public List<SchoolResponse> findSchedule(@PathVariable int schoolId){
+	public ResponseEntity<ResponseStructure<ScheduleResponse>> findSchedule(@PathVariable int schoolId){
 		return service.findSchedule(schoolId);
 	}
 	

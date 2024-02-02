@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.school.SBA.enums.ClassStatus;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class ClassHourResponse {
 
 	private LocalDateTime beginsAt;
