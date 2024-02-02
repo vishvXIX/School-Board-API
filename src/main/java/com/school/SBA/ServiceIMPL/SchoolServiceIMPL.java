@@ -1,14 +1,20 @@
 package com.school.SBA.ServiceIMPL;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import com.school.SBA.Entity.AcademicProgram;
 import com.school.SBA.Entity.School;
+import com.school.SBA.Entity.User;
 import com.school.SBA.Exception.IllagalRequestException;
 import com.school.SBA.Exception.UserNotFoundByIdException;
+import com.school.SBA.Repository.AcademicProgramRepository;
+import com.school.SBA.Repository.ClassHourRepository;
 import com.school.SBA.Repository.SchoolRepository;
 import com.school.SBA.Repository.UserRepository;
 import com.school.SBA.RequestDTO.SchoolRequest;
@@ -16,6 +22,8 @@ import com.school.SBA.ResponseDTO.SchoolResponse;
 import com.school.SBA.Service.SchoolService;
 import com.school.SBA.Utility.ResponseStructure;
 import com.school.SBA.enums.UserRole;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class SchoolServiceIMPL implements SchoolService {
@@ -27,7 +35,13 @@ public class SchoolServiceIMPL implements SchoolService {
 	private SchoolRepository schoolRepository;
 	
 	@Autowired
+	private ClassHourRepository classHourRepository;
+	
+	@Autowired
 	private ResponseStructure<SchoolResponse> structure;
+	
+	@Autowired
+	private AcademicProgramRepository academicProgramRepository;
 
 	@Override
 	public ResponseEntity<ResponseStructure<SchoolResponse>> saveSchool(SchoolRequest request) {
@@ -94,12 +108,12 @@ public class SchoolServiceIMPL implements SchoolService {
 
 	
 	@Override
-	public ResponseEntity<ResponseStructure<SchoolResponse>> deleteById(int schoolId) {
+	public ResponseEntity<ResponseStructure<SchoolResponse>> deleteSchool(int schoolId) {
 
 		return schoolRepository.findById(schoolId)
 				.map(school -> {
 					school.setDeleted(true);
-					//					repository.deleteById(userId);
+					//	repository.deleteById(schoolId);
 					schoolRepository.save(school);
 					structure.setStatus(HttpStatus.OK.value());
 					structure.setMessage("School deleted successfully");
@@ -110,4 +124,52 @@ public class SchoolServiceIMPL implements SchoolService {
 				.orElseThrow(() -> new IllagalRequestException("School not found by id"));
 	}
 	
+	
+//	@Transactional
+//	public void deleteSchoolIfDeleted() {
+//		 List<School> schools = schoolRepository.findByIsDeleted(true);
+//		 schools.forEach(school->{
+//			 
+//			academicProgramRepository.deleteAll(school.getLAcademicProgram());
+//			List<User> users = userRepository.findBySchool(school);
+//			users.forEach(user->{
+//				if(user.getUserRole().equals(UserRole.ADMIN)) {
+//				user.setSchool(null);
+//				userRepository.save(user);
+//				}else {
+//					userRepository.delete(user);
+//				}
+//			});
+//			schoolRepository.delete(school);
+//		});
+//	}	
+	
+	@Transactional
+	public void deleteSchoolIfDeleted() {
+	    List<School> schools = schoolRepository.findByIsDeleted(true);
+	    schools.forEach(school -> {
+	        List<AcademicProgram> academicPrograms = school.getLAcademicProgram();
+
+	        // Delete associated classHour 
+	        for (AcademicProgram academicProgram : academicPrograms) {
+	            classHourRepository.deleteByAcademicProgramProgramId(academicProgram.getProgramId());
+	        }
+
+	        // delete the academic_programs
+	        academicProgramRepository.deleteAll(academicPrograms);
+
+	        List<User> users = userRepository.findBySchool(school);
+			users.forEach(user->{
+				if(user.getUserRole().equals(UserRole.ADMIN)) {
+				user.setSchool(null);
+				userRepository.save(user);
+				}else {
+					userRepository.delete(user);
+				}
+			});
+			schoolRepository.delete(school);
+			System.err.println("School is Deleted Successfully !!");
+	    });
+	}
+
 }

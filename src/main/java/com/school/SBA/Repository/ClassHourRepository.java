@@ -8,5 +8,8 @@ import com.school.SBA.Entity.ClassHour;
 @Repository
 public interface ClassHourRepository extends JpaRepository<ClassHour, Integer> {
 
+	void deleteByAcademicProgramProgramId(int programId);
+
+
 
 }

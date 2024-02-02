@@ -4,10 +4,8 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import com.school.SBA.Entity.ClassHour;
 import com.school.SBA.RequestDTO.ClassHourDTOs;
 import com.school.SBA.ResponseDTO.ClassHourResponse;
-import com.school.SBA.ResponseDTO.ScheduleResponse;
 import com.school.SBA.Utility.ResponseStructure;
 
 public interface ClassHourService {
@@ -16,6 +14,8 @@ public interface ClassHourService {
 
 	ResponseEntity<ResponseStructure<List<ClassHourResponse>>> updateClassHour(
 			List<ClassHourDTOs> classHourDtoList);
+
+	public ResponseEntity<ResponseStructure<List<ClassHourResponse>>> generateClassHoursForWeek(String requestedDay);
 
 
 

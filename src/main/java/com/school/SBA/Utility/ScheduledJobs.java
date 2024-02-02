@@ -4,13 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.school.SBA.Repository.AcademicProgramRepository;
-import com.school.SBA.Repository.ClassHourRepository;
-import com.school.SBA.ServiceIMPL.AcademicProgramServiceIMPL;
+import com.school.SBA.Repository.SchoolRepository;
+import com.school.SBA.Service.SchoolService;
 import com.school.SBA.ServiceIMPL.ClassHourServiceIMPL;
+import com.school.SBA.ServiceIMPL.SchoolServiceIMPL;
 import com.school.SBA.ServiceIMPL.UserServiceIMPL;
 
 import jakarta.transaction.Transactional;
+import lombok.experimental.PackagePrivate;
 
 @Component
 public class ScheduledJobs {
@@ -20,6 +21,9 @@ public class ScheduledJobs {
 	
 	@Autowired
 	private ClassHourServiceIMPL classHourServiceIMPL;
+	
+	@Autowired
+	private SchoolServiceIMPL schoolServiceIMPL;
 	
 //	@Scheduled(fixedDelay = 1000l)
 //	public void test() {
@@ -31,15 +35,21 @@ public class ScheduledJobs {
 	
 	
 	@Transactional
-	@Scheduled(fixedDelay = 1000l*60)
+	@Scheduled(fixedDelay = 2000l*60)
 	public void deleteUser() {
-		userServiceIMPL.deleteUsers();
+		userServiceIMPL.deleteUserIfDeleted();
 	}
 	
 	@Transactional
-	@Scheduled(fixedDelay = 1000l*60)
+	@Scheduled(fixedDelay = 2000l*60)
 	public void deleteprograms() {
-		classHourServiceIMPL.deleteprograms();
+		classHourServiceIMPL.deletePrograms();
+	}
+	
+	@Transactional
+	@Scheduled(fixedDelay = 2000l*60)
+	public void deleteSchool() {
+		schoolServiceIMPL.deleteSchoolIfDeleted();
 	}
 	
 }

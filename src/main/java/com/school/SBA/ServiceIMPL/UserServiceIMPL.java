@@ -1,5 +1,7 @@
 package com.school.SBA.ServiceIMPL;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,13 +31,13 @@ public class UserServiceIMPL implements UserService{
 
 	@Autowired
 	private UserRepository repository;
-	
+
 	@Autowired
 	private AcademicProgramRepository academicProgramRepository;
 
 	@Autowired
 	private ResponseStructure<UserResponse> responseStructure;
-	
+
 	@Autowired
 	private ClassHourRepository classHourRepository;
 
@@ -124,7 +126,7 @@ public class UserServiceIMPL implements UserService{
 		return repository.findById(userId)
 				.map(user -> {
 					user.setDeleted(true);
-//					repository.deleteById(userId);
+					//					repository.deleteById(userId);
 					repository.save(user);
 					responseStructure.setStatus(HttpStatus.OK.value());
 					responseStructure.setMessage("user deleted successfully");
@@ -134,24 +136,45 @@ public class UserServiceIMPL implements UserService{
 				})
 				.orElseThrow(() -> new UserNotFoundByIdException("User not found by id"));
 	}
-	
-	public void deleteUsers() {
-	    repository.findByisDeleted(true).forEach(user -> {
-	    	
-	        if (user.isDeleted() && user.getUserRole() != UserRole.ADMIN) {
-	            user.getListAcademicPrograms().forEach(program->{
-	            	program.getListUsers().remove(user);
-	            	academicProgramRepository.save(program);
-	            });
-	            user.getListClassHours().forEach(classHour->{
-	            	classHour.setUser(null);
-	            	classHourRepository.save(classHour);
-	            });
-	            repository .delete(user);
-	        }
-	        System.err.println("DELETED");
-	    });
+
+
+	//	public void deleteUsers() {
+	//		repository.findByIsDeleted(true).forEach(user -> {
+	//	    	
+	//	        if (user.getUserRole() != UserRole.ADMIN) {
+	//	            user.getListAcademicPrograms().forEach(program->{
+	//	            	program.getListUsers().remove(user);
+	//	            	academicProgramRepository.save(program);
+	//	            });
+	//	            user.getListClassHours().forEach(classHour->{
+	//	            	classHour.setUser(null);
+	//	            	classHourRepository.save(classHour);
+	//	            });
+	//	            repository .delete(user);
+	//	        }
+	//	        System.err.println("DELETED");
+	//	    });
+	//}
+
+	public void deleteUserIfDeleted()
+	{
+		List<User> usersToDelete = new ArrayList<User>();
+		
+		repository.findByIsDeleted(true)
+		.forEach(user ->
+		{
+			user.getListClassHours().forEach(classHour -> classHour.setUser(null));
+			classHourRepository.saveAll(user.getListClassHours());
+			
+			user.getListAcademicPrograms().forEach(academicProgram -> academicProgram.setListUsers(null));
+			academicProgramRepository.saveAll(user.getListAcademicPrograms());
+			
+			usersToDelete.add(user);
+		});
+		repository.deleteAll(usersToDelete);
 	}
+
+
 
 
 

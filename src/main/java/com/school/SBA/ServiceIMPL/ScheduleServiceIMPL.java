@@ -2,7 +2,6 @@ package com.school.SBA.ServiceIMPL;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,7 +49,32 @@ public class ScheduleServiceIMPL implements ScheduleService {
 		}).orElseThrow(()->new IllagalRequestException("School has only one school id that is of ADMINS"));
 
 	}
+	
+	
+	@Override
+	public ResponseEntity<ResponseStructure<ScheduleResponse>> updateScheduleById(int scheduleId,
+			ScheduleRequest scheduleldRequest) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+//	@Override
+//	public ResponseEntity<ResponseStructure<ScheduleResponse>> updateScheduleById(int scheduleldId,
+//			ScheduleRequest scheduleldRequest) {
+//		return scheduleRepository.findById(scheduleldId).map(scheduleld->{
+//			scheduleRepository.save(mapToUpdate(scheduleldId, scheduleld.getSchool(), scheduleldRequest));
+//			
+//			ResponseStructure<ScheduleResponse> responseStructure = new ResponseStructure<ScheduleResponse>();
+//			
+//			responseStructure.setStatus(HttpStatus.OK.value());
+//			responseStructure.setMessage("Scheduleld Updated successfully!!!!");
+//			responseStructure.setData(mapToScheduleResponse(scheduleld,false));
+//			
+//			return new ResponseEntity<ResponseStructure<ScheduleResponse>>(responseStructure, HttpStatus.CREATED);
+//		}).orElseThrow(()->new IllegalArgumentException("Scheduleld Does Not Exist!!!"));
+//	}
+	
 
+	
 	private Schedule mapToSchedule(@Valid ScheduleRequest scheduleRequest)
 	{
 		return Schedule.builder()
@@ -86,42 +110,9 @@ public class ScheduleServiceIMPL implements ScheduleService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-//
-//	@Override
-//	public ResponseEntity<ResponseStructure<ScheduleResponse>> deleteById(int scheduleId) {
-//
-//		return repository.findById(scheduleId)
-//				.map(schedules -> {
-//					schedules.setDeleted(true);
-//					repository.deleteById(scheduleId);
-//					repository.save(schedules);
-//					structure.setStatus(HttpStatus.OK.value());
-//					structure.setMessage("schedule Program deleted successfully");
-//					structure.setData(mapToScheduleResponse(schedules,true));
-//
-//					return new ResponseEntity<>(structure, HttpStatus.OK);
-//				})
-//				.orElseThrow(() -> new IllagalRequestException("schedule Program not found by id"));
-//	}
+
 	
-	@Override
-	public ResponseEntity<ResponseStructure<ScheduleResponse>> deleteById(int scheduleId) throws Exception {
-
-		Optional<Schedule> optional = repository.findById(scheduleId);
-		if(optional.isPresent()) {
-			Schedule schedule = optional.get();
-			repository.delete(schedule);
-//			ResponseStructure<Schedule> responseStructure = new ResponseStructure<>();
-			structure.setStatus(HttpStatus.OK.value());
-			structure.setMessage("Deleted Successfully...");
-			structure.setData(mapToScheduleResponse(schedule, false));
-			return new  ResponseEntity<ResponseStructure<ScheduleResponse>>(structure,HttpStatus.OK);
-		}
-		else {
-			throw new Exception("Schedule Not Found");
-		}
-	}
-
+	
 
 
 }

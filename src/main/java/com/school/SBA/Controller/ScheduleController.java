@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -35,9 +34,9 @@ public class ScheduleController {
 		return service.findSchedule(schoolId);
 	}
 	
-	@DeleteMapping("/schedules/{scheduleId}")
-	public ResponseEntity<ResponseStructure<ScheduleResponse>> deleteById(@PathVariable int scheduleId) throws Exception {
-		return service.deleteById(scheduleId);
+	@PutMapping("/schedules/{scheduleId}")
+	public ResponseEntity<ResponseStructure<ScheduleResponse>> updateScheduleById(@PathVariable int scheduleId,
+		@RequestBody ScheduleRequest scheduleldRequest){
+		return service.updateScheduleById(scheduleId,scheduleldRequest);
 	}
-	
 }

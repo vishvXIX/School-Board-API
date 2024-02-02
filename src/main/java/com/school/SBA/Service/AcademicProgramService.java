@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import com.school.SBA.Entity.User;
 import com.school.SBA.RequestDTO.AcademicProgramRequest;
 import com.school.SBA.ResponseDTO.AcademicProgramResponse;
-import com.school.SBA.ResponseDTO.SchoolResponse;
 import com.school.SBA.Utility.ResponseStructure;
 
 public interface AcademicProgramService {
